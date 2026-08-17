@@ -1,0 +1,37 @@
+/*
+ * Layer 1 — raw alpha primitives and canvases.
+ * Mode-independent. Nothing here changes when the theme flips.
+ * This is the only file in the project allowed to contain literal colour values.
+ */
+
+:root {
+  /* Black alpha ramp — used by the light theme */
+  --black-050: rgba(0, 0, 0, 0.05);
+  --black-100: rgba(0, 0, 0, 0.1);
+  --black-200: rgba(0, 0, 0, 0.2);
+  --black-300: rgba(0, 0, 0, 0.3);
+  --black-400: rgba(0, 0, 0, 0.4);
+  --black-500: rgba(0, 0, 0, 0.5);
+  --black-600: rgba(0, 0, 0, 0.6);
+  --black-700: rgba(0, 0, 0, 0.7);
+  --black-800: rgba(0, 0, 0, 0.8);
+  --black-900: rgba(0, 0, 0, 0.9);
+  --black-1000: #000000;
+
+  /* White alpha ramp — used by the dark theme */
+  --white-050: rgba(255, 255, 255, 0.05);
+  --white-100: rgba(255, 255, 255, 0.1);
+  --white-200: rgba(255, 255, 255, 0.2);
+  --white-300: rgba(255, 255, 255, 0.3);
+  --white-400: rgba(255, 255, 255, 0.4);
+  --white-500: rgba(255, 255, 255, 0.5);
+  --white-600: rgba(255, 255, 255, 0.6);
+  --white-700: rgba(255, 255, 255, 0.7);
+  --white-800: rgba(255, 255, 255, 0.8);
+  --white-900: rgba(255, 255, 255, 0.9);
+  --white-1000: #ffffff;
+
+  /* Canvases — the solid ground every alpha value composites over */
+  --canvas-dark: #0a0a0a;
+  --canvas-light: #ffffff;
+}

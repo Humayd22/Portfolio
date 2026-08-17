@@ -1,0 +1,43 @@
+/*
+ * Layer 2 — semantic tokens.
+ * Dark is the default and pulls from the white ramp.
+ * Light overrides and pulls from the black ramp.
+ * Same step numbers, opposite ramp.
+ */
+
+:root {
+  --canvas: var(--canvas-dark);
+
+  --bg: var(--canvas);
+  --surface: var(--white-100);
+  --surface-hover: var(--white-200);
+  --border: var(--white-100);
+
+  --text-primary: var(--white-1000);
+  --text-secondary: var(--white-500);
+  --text-muted: var(--white-400);
+
+  --emphasis: var(--white-1000);
+
+  --name-glow: 0 0 80px rgba(255, 255, 255, 0.35);
+}
+
+[data-theme="light"] {
+  --canvas: var(--canvas-light);
+
+  /* A faint grey page with pure-white cards buys the separation
+     dark mode gets for free from its lighter alpha surface. */
+  --bg: var(--black-050);
+  --surface: var(--canvas);
+  --surface-hover: var(--black-050);
+  --border: var(--black-100);
+
+  --text-primary: var(--black-1000);
+  --text-secondary: var(--black-500);
+  --text-muted: var(--black-400);
+
+  --emphasis: var(--black-1000);
+
+  /* A dark blur on white reads as mud. Light mode uses crisp solid type. */
+  --name-glow: none;
+}
