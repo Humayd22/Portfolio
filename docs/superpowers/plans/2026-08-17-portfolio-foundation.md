@@ -486,24 +486,35 @@ Create `components/ThemeToggle/ThemeToggle.tsx`:
 ```tsx
 "use client";
 
-import { useEffect, useState } from "react";
-import { applyTheme, getCurrentTheme, type Theme } from "@/lib/theme";
+import { useSyncExternalStore } from "react";
+import { DEFAULT_THEME, applyTheme, getCurrentTheme, type Theme } from "@/lib/theme";
 import styles from "./ThemeToggle.module.css";
 
+// The pre-paint script in the root layout sets data-theme before React
+// hydrates, so the server cannot know the real value. useSyncExternalStore
+// is built for this: it reads the live DOM on the client while rendering
+// the server's default during SSR, with no state write on mount.
+function subscribe(onStoreChange: () => void) {
+  const observer = new MutationObserver(onStoreChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+  return () => observer.disconnect();
+}
+
+function getServerSnapshot(): Theme {
+  return DEFAULT_THEME;
+}
+
 export function ThemeToggle() {
-  // Starts as the SSR default so the first client render matches the
-  // server markup; the effect then reconciles with whatever the
-  // no-flash script actually painted.
-  const [theme, setTheme] = useState<Theme>("dark");
+  const theme = useSyncExternalStore(subscribe, getCurrentTheme, getServerSnapshot);
 
-  useEffect(() => {
-    setTheme(getCurrentTheme());
-  }, []);
-
+  // applyTheme mutates data-theme; the observer fires and re-renders.
+  // The DOM attribute is the single source of truth — no second copy
+  // of the state exists to fall out of sync.
   function toggle() {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    applyTheme(next);
-    setTheme(next);
+    applyTheme(theme === "dark" ? "light" : "dark");
   }
 
   const destination = theme === "dark" ? "light" : "dark";
