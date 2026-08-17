@@ -5,7 +5,10 @@
  * Same step numbers, opposite ramp.
  */
 
-:root {
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+
   --canvas: var(--canvas-dark);
 
   --bg: var(--canvas);
@@ -23,6 +26,8 @@
 }
 
 [data-theme="light"] {
+  color-scheme: light;
+
   --canvas: var(--canvas-light);
 
   /* A faint grey page with pure-white cards buys the separation
@@ -33,8 +38,15 @@
   --border: var(--black-100);
 
   --text-primary: var(--black-1000);
-  --text-secondary: var(--black-500);
-  --text-muted: var(--black-400);
+  /* One step deeper than dark's mirrored --white-500. Equal alpha steps do
+     not produce equal contrast against opposite canvases: black/500 over
+     the light page background composites to 3.89:1 (fails AA 4.5:1), while
+     black/600 reaches 5.55:1. Do not "restore symmetry" with black/500. */
+  --text-secondary: var(--black-600);
+  /* black/400 composites to 2.81:1, below the 3:1 floor for non-text/large
+     text. black/500 clears the floor at 3.89:1 while staying visibly
+     subordinate to the black/600 secondary above. */
+  --text-muted: var(--black-500);
 
   --emphasis: var(--black-1000);
 

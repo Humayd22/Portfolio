@@ -96,8 +96,8 @@ Same step numbers, opposite ramp.
 | `--surface-hover` | `--white-200` | `--black-050` |
 | `--border` | `--white-100` | `--black-100` |
 | `--text-primary` | `--white-1000` | `--black-1000` |
-| `--text-secondary` | `--white-500` | `--black-500` |
-| `--text-muted` | `--white-400` | `--black-400` |
+| `--text-secondary` | `--white-500` | `--black-600` |
+| `--text-muted` | `--white-400` | `--black-500` |
 | `--emphasis` | `--white-1000` | `--black-1000` |
 | `--name-glow` | `0 0 80px rgba(255,255,255,0.35)` | `none` |
 
@@ -105,6 +105,29 @@ Because surface, hover and border are all alpha, they composite over the canvas 
 without hand-picking a grey per theme. In light mode the page background is a faint
 `--black-050` and cards are pure white, which buys the card separation that dark mode gets
 for free.
+
+### Accessibility
+
+`--text-primary` is pure black-on-canvas or white-on-canvas in both themes, so it clears AA
+by a wide margin everywhere it's used. `--text-secondary` and `--text-muted` are not
+symmetric, and mirroring the step number between ramps does **not** mirror the contrast:
+equal alpha steps do not produce equal contrast against opposite canvases, because the dark
+canvas is nearly black (`#0a0a0a`) while the light canvas the page background composites
+against is a pale, near-white grey. Measured ratios:
+
+- Dark `--text-secondary` (`--white-500` over `#0a0a0a`): **5.33:1** — passes AA (4.5:1)
+- Light `--text-secondary` at the mirrored `--black-500`: **3.89:1** — fails AA
+- Light `--text-secondary` at `--black-600` (what the token table above specifies): **5.55:1**
+  — passes AA
+- Dark `--text-muted` (`--white-400` over `#0a0a0a`): **3.77:1** — already above the 3:1 floor
+  for large text / non-text use
+- Light `--text-muted` at the mirrored `--black-400`: **2.81:1** — fails the 3:1 floor
+- Light `--text-muted` at `--black-500` (what the token table above specifies): **3.89:1** —
+  clears the floor while staying visibly subordinate to the light `--text-secondary` above it
+
+This is why the light ramp runs one step deeper than dark for `--text-secondary` and
+`--text-muted`: the ramps are not mirror images of each other, only the underlying alpha
+primitives are shared.
 
 ### `styles/base.css`
 

@@ -1,4 +1,5 @@
-export type Theme = "dark" | "light";
+export const THEMES = ["dark", "light"] as const;
+export type Theme = (typeof THEMES)[number];
 
 /** localStorage key holding the visitor's explicit choice. */
 export const THEME_STORAGE_KEY = "portfolio-theme";
@@ -10,7 +11,7 @@ export const THEME_ATTRIBUTE = "data-theme";
 export const DEFAULT_THEME: Theme = "dark";
 
 export function isTheme(value: unknown): value is Theme {
-  return value === "dark" || value === "light";
+  return (THEMES as readonly unknown[]).includes(value);
 }
 
 /** Reads the theme currently painted on the document. */
@@ -38,9 +39,10 @@ export function applyTheme(theme: Theme): void {
 export const NO_FLASH_SCRIPT = `
 (function () {
   try {
+    var themes = ${JSON.stringify(THEMES)};
     var stored = localStorage.getItem("${THEME_STORAGE_KEY}");
     var theme =
-      stored === "dark" || stored === "light"
+      themes.indexOf(stored) !== -1
         ? stored
         : window.matchMedia("(prefers-color-scheme: light)").matches
           ? "light"
