@@ -1,0 +1,330 @@
+.timeline {
+  /*
+   * The marker geometry lives here rather than on .marker, because the rail has
+   * to start exactly at the first dot's centre and the two would otherwise
+   * drift apart the moment either number was touched.
+   */
+  --marker-size: 0.625rem;
+  --marker-top: 0.4rem;
+  --rail-start: calc(var(--marker-top) + var(--marker-size) / 2);
+
+  position: relative;
+  list-style: none;
+  padding: 0;
+  max-width: 46rem;
+}
+
+/*
+ * The rail is one element spanning the whole list, not a border on each entry.
+ * A per-entry border was simpler and stayed in sync with the markers for free,
+ * but it cannot carry a scroll progress fill: the filled portion has to be a
+ * single unbroken front, and segments animating on their own timelines break
+ * into a dashed line whenever two neighbours are at different progress.
+ */
+.timeline::before,
+.timeline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  /* Begins at the centre of the first marker, not at the top of the list — run
+     flush, the line pokes out above the dot with nothing to join. */
+  top: var(--rail-start);
+  width: 1px;
+  /*
+   * Measured by Timeline.tsx, and it ends at the LAST dot rather than at the
+   * foot of the list. Past that point the consultancy's clients carry their own
+   * lines, and a main rail running down beside them would be a second track
+   * describing the same stretch of career twice.
+   *
+   * The fallback matters: with no JS the rail still needs a length, and running
+   * to the end of the list is the safe wrong answer rather than vanishing.
+   */
+  height: var(--rail-length, calc(100% - var(--rail-start)));
+  /* Explicit, so the markers have a level to sit above. Both rails are the ol's
+     own pseudo-elements and so paint after the entries by default, which is why
+     the fill was crossing over the dots. */
+  z-index: 0;
+}
+
+/* The unfilled track. */
+.timeline::before {
+  background-color: var(--border);
+}
+
+/*
+ * The filled portion, drawn over the track and grown from the top as the list
+ * scrolls past. Scale rather than height so it stays on the compositor and
+ * never triggers layout — this updates on every frame of a scroll.
+ *
+ * --rail-progress is set by Timeline.tsx. It was a CSS scroll-driven animation,
+ * which needed no JS at all, but the markers have to change state exactly as
+ * the front reaches them and CSS cannot express that: the flip point is each
+ * dot's fraction down the rail, which no range keyword knows. One measured
+ * number drives the line and the dots together, so they cannot disagree.
+ */
+.timeline::after {
+  background-color: var(--accent);
+  transform: scaleY(var(--rail-progress, 0));
+  transform-origin: top;
+}
+
+.entry {
+  position: relative;
+  padding: 0 0 2.75rem 2rem;
+}
+
+/* No trailing gap under the final role — the rail ends with the content. */
+.entry:last-child {
+  padding-bottom: 0;
+}
+
+.marker {
+  position: absolute;
+  /* Above both rails. .entry is position: relative with an auto z-index, so it
+     creates no stacking context of its own and this is compared directly
+     against the rails rather than being trapped inside the entry. */
+  z-index: 1;
+  /* Half its own width, so it straddles the 1px rail rather than sitting
+     beside it. */
+  left: calc(var(--marker-size) / -2);
+  top: var(--marker-top);
+  width: var(--marker-size);
+  height: var(--marker-size);
+  border-radius: 50%;
+  background-color: var(--text-muted);
+}
+
+/*
+ * A dot the fill has reached. The first is marked from the start — it is the
+ * current role, and the one worth finding at a glance — and the rest take the
+ * same treatment as the line passes them, so the ring reads as "reached" rather
+ * than as a badge only the top entry carries.
+ */
+.entry:first-child .marker,
+.marker[data-passed="true"] {
+  background-color: var(--emphasis);
+  box-shadow: 0 0 0 4px var(--surface);
+}
+
+/* The ring appears under the scroll, so it grows in rather than snapping on.
+   The colour is a state change and switches outright. */
+@media (prefers-reduced-motion: no-preference) {
+  .marker {
+    transition: box-shadow 220ms ease-out;
+  }
+}
+
+/*
+ * The company mark, sitting above the role. Height-constrained rather than
+ * width-constrained: these marks vary wildly in aspect ratio, and matching their
+ * heights is what makes them read as one set down the rail. Width is free to
+ * follow, capped so a very wide wordmark cannot run into the measure.
+ */
+.logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.875rem;
+  height: 2rem;
+}
+
+.logoImg {
+  max-height: 100%;
+  /*
+   * Raised with the height rather than left where it was. ADIB is a 5.4:1
+   * wordmark and needs 173px to stand 32px tall — at the old 9rem cap it was
+   * the one mark in the set rendering short, and growing the others would have
+   * widened that gap. 11rem clears it, and is still a fifth of the measure.
+   */
+  max-width: 11rem;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
+}
+
+/*
+ * Theme swap, the same mechanism ProjectCard uses. Dark is the :root default so
+ * the light mark starts hidden, and the pair trade places under the attribute
+ * the pre-paint script sets — correct mark on the first frame, no JS.
+ */
+.onLight {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onDark {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onLight {
+  display: block;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.role {
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.company {
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.3;
+  color: var(--text-secondary);
+}
+
+.company::before {
+  content: "· ";
+}
+
+.period {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.description {
+  margin-top: 0.75rem;
+  max-width: 54ch;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* ---- Accomplishments ---------------------------------------------------- */
+
+/*
+ * Custom markers rather than list-style discs: the browser's own bullet cannot
+ * be coloured independently of the text, and a muted bullet beside secondary
+ * copy is what keeps these from competing with the descriptions above them.
+ */
+.accomplishments {
+  list-style: none;
+  margin-top: 0.875rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 54ch;
+}
+
+.accomplishment {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.accomplishment::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  /* Aligned to the first line's optical centre rather than its box, so the dot
+     sits with the text however the line wraps. */
+  top: 0.6em;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 50%;
+  background-color: var(--text-muted);
+}
+
+/* ---- Client engagements ------------------------------------------------- */
+
+/*
+ * The consultancy's clients, indented under it on their own hairline. The
+ * offset is what makes the nesting legible at a glance — without it these read
+ * as more jobs rather than as work done under the role above.
+ */
+.clients {
+  list-style: none;
+  margin-top: 1.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/*
+ * Each client carries its own track and fill rather than a plain border, so the
+ * blue continues down the nested lines once the main rail has ended at the last
+ * dot. Same two-layer construction as the rail above.
+ */
+.client {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.client::before,
+.client::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+
+.client::before {
+  background-color: var(--border);
+}
+
+.client::after {
+  background-color: var(--accent);
+  transform: scaleY(var(--client-progress, 0));
+  transform-origin: top;
+}
+
+.clientLogo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.625rem;
+  /* Smaller than an employer's mark, so the hierarchy holds even when a client
+     is a household name and the employer is not. */
+  height: 1.5rem;
+}
+
+.clientName {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+/* The description already carries a top margin; against a name rather than a
+   date row it wants slightly less. */
+.clientName + .description {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 40rem) {
+  .entry {
+    padding-left: 1.5rem;
+    padding-bottom: 2.25rem;
+  }
+
+  /* Stacked, so the separator between them would dangle at a line end. */
+  .company::before {
+    content: none;
+  }
+
+  .head {
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  /* The indent that signals nesting has to survive the narrower gutter, but it
+     cannot keep its desktop value or the client copy loses too much measure. */
+  .client {
+    padding-left: 0.875rem;
+  }
+}

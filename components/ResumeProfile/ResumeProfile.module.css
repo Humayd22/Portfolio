@@ -1,0 +1,132 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-width: 46rem;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.name {
+  /*
+   * Sized for a sidebar, not a page title. The headline above it is the page's
+   * voice; this is the label on a column beside the timeline, so it tops out
+   * well below the 3.5rem it used when the block spanned the full measure.
+   */
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.role {
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  color: var(--text-secondary);
+}
+
+.summary {
+  max-width: 54ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* ---- Actions ------------------------------------------------------------ */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8125rem 1.25rem;
+  background-color: var(--surface);
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  transition:
+    background-color 200ms ease,
+    opacity 200ms ease;
+}
+
+.action:hover {
+  background-color: var(--surface-hover);
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 3px;
+}
+
+/*
+ * One filled control, so the primary path is obvious without a colour the
+ * monochrome palette does not have. The reference used an accent for this;
+ * inverting the fill does the same job inside our tokens.
+ */
+.primary {
+  background-color: var(--text-primary);
+  /* --canvas, not --bg: --bg is an alpha token and near-invisible on a fill. */
+  color: var(--canvas);
+}
+
+.primary:hover {
+  background-color: var(--text-primary);
+  opacity: 0.88;
+}
+
+.actionIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+
+/* ---- Stats -------------------------------------------------------------- */
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  margin-top: 0.5rem;
+}
+
+/*
+ * column-reverse: the number reads above its label, but a description list has
+ * to give the term before its definition in the DOM. Reversing visually keeps
+ * both the semantics and the look.
+ */
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.25rem;
+}
+
+.statValue {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 40rem) {
+  .stats {
+    gap: 1.75rem;
+  }
+}

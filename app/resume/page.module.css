@@ -1,0 +1,101 @@
+/*
+ * Stacked by default — profile, then the timeline. From the wide breakpoint the
+ * two sit side by side with the timeline leading and the profile as a right-hand
+ * column. The DOM keeps the profile first either way, so the mobile order is the
+ * natural one and only the desktop placement is overridden.
+ */
+.resume {
+  display: grid;
+  gap: 3rem;
+}
+
+@media (min-width: 64rem) {
+  .resume {
+    /*
+     * Bounded, and deliberately narrower than the page's 96rem measure. The
+     * timeline caps its own content at 46rem, so a 1fr track on a wide screen
+     * leaves ~440px of empty column that reads as an enormous gap between the
+     * two halves. 46 + 4 + 30 makes each track exactly as wide as what sits in
+     * it, and the real gap is the only space between them.
+     */
+    max-width: 80rem;
+    /* minmax(0, …) on both tracks: without it a long unbroken word in either
+       column would blow the track past its share instead of wrapping. */
+    grid-template-columns: minmax(0, 46rem) minmax(0, 30rem);
+    align-items: start;
+    gap: 4rem;
+  }
+
+  .profileColumn {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .experience {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
+
+/*
+ * Filled, and the only such control on the page — downloading the CV is the one
+ * thing a recruiter is likely to want, so it should not have to compete with
+ * the timeline for attention.
+ */
+.download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  align-self: flex-start;
+  padding: 0.875rem 1.25rem;
+  background-color: var(--text-primary);
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  /* --canvas, not --bg: --bg is an alpha token and near-invisible on a fill. */
+  color: var(--canvas);
+  transition: opacity 200ms ease;
+}
+
+.download:hover {
+  opacity: 0.88;
+}
+
+.download:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 3px;
+}
+
+.downloadIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+
+/*
+ * Says what arrives before the click. Mixed from the button's own colour rather
+ * than a token, since it sits on an inverted fill that flips with the theme.
+ */
+.format {
+  padding: 0.125rem 0.375rem;
+  background-color: color-mix(in srgb, currentColor 16%, transparent);
+  border-radius: 0.25rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+/*
+ * Referenced by the page but previously undefined, so the section title fell
+ * back to the UA's h2. Sized to sit just under the profile's name rather than
+ * compete with it, and given the same tracking as the other headings.
+ */
+.heading {
+  margin-bottom: 2rem;
+  /* Deliberately identical to ResumeProfile's .name — the two columns start
+     level, so their first lines have to be the same size to read as a pair. */
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text-primary);
+}
+

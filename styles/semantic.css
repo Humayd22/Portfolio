@@ -16,11 +16,28 @@
   --surface-hover: var(--white-200);
   --border: var(--white-100);
 
+  /* Bento cards, which sit over the hero word and blur it behind them. Must
+     stay translucent in both themes or there is nothing for the backdrop
+     filter to reveal — this is why it cannot just use --surface, which is
+     opaque in light mode. */
+  --surface-glass: var(--white-100);
+  /*
+   * Deliberately a step DOWN, not up: the card recedes on hover rather than
+   * lighting up. Thinning the fill lets more of the blurred hero word through,
+   * so the card gives way to the headline that is simultaneously taking on its
+   * label. Not a mistake — do not "correct" this to white/200.
+   */
+  --surface-glass-hover: var(--white-050);
+
   --text-primary: var(--white-1000);
   --text-secondary: var(--white-500);
   --text-muted: var(--white-400);
 
   --emphasis: var(--white-1000);
+
+  /* Reads at 7.59:1 on the dark canvas — comfortably clear of the 3:1 floor a
+     1px non-text line needs. */
+  --accent: var(--blue-400);
 
   --name-glow: 0 0 80px rgba(255, 255, 255, 0.35);
 }
@@ -37,6 +54,11 @@
   --surface-hover: var(--black-050);
   --border: var(--black-100);
 
+  /* Deliberately not --surface (which is opaque white here): the cards have to
+     let the hero word show through, blurred, from behind. */
+  --surface-glass: var(--black-050);
+  --surface-glass-hover: var(--black-100);
+
   --text-primary: var(--black-1000);
   /* One step deeper than dark's mirrored --white-500. Equal alpha steps do
      not produce equal contrast against opposite canvases: black/500 over
@@ -49,6 +71,11 @@
   --text-muted: var(--black-500);
 
   --emphasis: var(--black-1000);
+
+  /* The deeper step, not --blue-400: the lighter blue reaches only 2.61:1 on
+     white — under the 3:1 floor, so it would read as a faint smudge. This one
+     measures 5.51:1. */
+  --accent: var(--blue-600);
 
   /* A dark blur on white reads as mud. Light mode uses crisp solid type. */
   --name-glow: none;

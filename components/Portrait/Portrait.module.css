@@ -1,0 +1,40 @@
+.placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: var(--surface-hover);
+}
+
+/*
+ * Fills its container edge to edge. position: absolute rather than width/height
+ * 100% because these cards are flex columns — as a flex item the image would be
+ * sized by its own aspect ratio and leave gaps.
+ */
+.image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* cover, so the crop fills the card at any aspect ratio rather than
+     letterboxing. */
+  object-fit: cover;
+  object-position: center;
+
+  /*
+   * The three levers, in the order they are applied. Tune them here.
+   *
+   * grayscale  1 is fully monochrome; 0.85 leaves a trace of colour.
+   * brightness below 1 darkens the whole image evenly.
+   * contrast   above 1 pushes lights and darks apart — worth a nudge because
+   *            desaturating flattens a photo, hue having carried separation
+   *            that luminance must now carry alone. Note it fights brightness:
+   *            raising contrast lifts the highlights back up.
+   */
+  --portrait-grayscale: 1;
+  --portrait-brightness: 0.73;
+  --portrait-contrast: 1.1;
+
+  filter: grayscale(var(--portrait-grayscale))
+    brightness(var(--portrait-brightness)) contrast(var(--portrait-contrast));
+}

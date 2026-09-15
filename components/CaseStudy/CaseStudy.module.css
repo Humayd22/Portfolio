@@ -1,0 +1,584 @@
+/*
+ * One column, one measure. A case study is read top to bottom, so everything
+ * shares a left edge and only the images break out.
+ */
+.study {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  /* No cap of its own: the page shell already holds everything to 96rem, and
+     capping again here left a band of unused width to the right of the lead.
+     The prose keeps its own measure independently, so nothing gets too long. */
+  max-width: none;
+}
+
+/* The project's own summary, restated here as the opening paragraph — larger
+   than the body copy that follows, so it reads as a lede. */
+.intro {
+  max-width: 46rem;
+  font-size: clamp(1.0625rem, 1.7vw, 1.375rem);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* Each strand keeps the page's own rhythm between its sections. */
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.placeholder {
+  max-width: 62ch;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+/* ---- Lead --------------------------------------------------------------- */
+
+/*
+ * The opening block: facts, prose and figures on the left, the project's mark
+ * on the right.
+ */
+.lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 40rem);
+  gap: 4rem;
+  align-items: center;
+}
+
+.leadBody {
+  display: flex;
+  flex-direction: column;
+  /* Tighter than the page rhythm: the figures are this block's conclusion, not
+     a section apart from it. */
+  gap: clamp(2.75rem, 5vh, 3.75rem);
+}
+
+/*
+ * No panel behind this one, unlike the screenshots further down. Those are light
+ * UI captures that would float as bright rectangles on the dark theme; this is a
+ * product render on transparency, which sits on the page directly and looks
+ * boxed-in when framed.
+ */
+@media (max-width: 64rem) {
+  .lead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Kept off full width once stacked, so a 1500px-wide render of a card fan
+     does not dominate the page it is illustrating. */
+  .leadArt {
+    max-width: 32rem;
+  }
+
+}
+
+/* ---- Overview ----------------------------------------------------------- */
+
+/*
+ * Facts in a narrow column beside the prose. They are reference rather than
+ * narrative, so pulling them aside lets Challenge and Results read as one
+ * continuous column instead of being interrupted by a row of metadata.
+ */
+.overview {
+  display: grid;
+  /*
+   * The facts column is sized to its longest value ("Senior product designer")
+   * rather than given a generous share. Most of what read as a gap was empty
+   * column rather than the gap itself, so both were pulled in.
+   */
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  gap: 2.5rem;
+  /* start, not center: facts is a short fixed list and narrative is long
+     prose, so centering them against each other let facts drift down the
+     page as narrative grew. Facts pins to the top of the row instead. */
+  align-items: start;
+}
+
+.overviewWide {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* The pin below is for sitting beside the facts; with none, the prose takes the
+   only track there is. */
+.overviewWide .narrative {
+  grid-column: auto;
+}
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+/* The label leads here, unlike the stats below where the number does — these
+   are read as a list of properties, so the property name comes first. */
+.factLabel {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.factValue {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.narrative {
+  /*
+   * Pinned to the second track. Grid would otherwise auto-place it into the
+   * first — the narrow facts column — on a strand that has no facts, and the
+   * prose would read at a different width from one tab to the next.
+   */
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  /*
+   * Tighter than --section-gap. Challenge and Results are two halves of one
+   * overview, read as a single column beside the facts — the page's full
+   * section rhythm separates whole subjects, and applying it here made them
+   * look like unrelated sections that happen to share a column.
+   */
+  gap: clamp(2.5rem, 5vh, 3.5rem);
+}
+
+/* ---- Sections ----------------------------------------------------------- */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.heading {
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text-primary);
+}
+
+
+/*
+ * Emphasis is weight alone by default. Results marks seven product names in a
+ * single paragraph, and lifting all of them to the primary ink turned most of
+ * the sentence white, which is not emphasis at all.
+ */
+.body strong {
+  font-weight: 500;
+}
+
+/*
+ * The exception: one phrase carrying the point of the section. Here the colour
+ * step is the whole intent, and there is only one marked run to spend it on.
+ */
+.highlight strong {
+  color: var(--text-primary);
+}
+
+.body {
+  /* Held to a comfortable line length even though the column is wider, so the
+     images can run full width without dragging the prose with them. */
+  max-width: 62ch;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* ---- Stats -------------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  /* auto-fit rather than a fixed three: the figures spread across whatever
+     width there is, and a track with two or four stats still fills the row. */
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 2rem;
+}
+
+/* column-reverse: the number reads above its label, but a description list has
+   to give the term before its definition in the DOM. */
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  /*
+   * flex-end, which in a reversed column means the TOP. Without it the content
+   * packs to the bottom, so a stat whose label wraps to three lines pushes its
+   * number up and the row of figures stops sharing a baseline.
+   */
+  justify-content: flex-end;
+  gap: 0.375rem;
+}
+
+.statValue {
+  margin: 0;
+  /* Down from clamp(2.5rem, 5vw, 3.75rem): large enough to read as the block's
+     headline figures, without shouting over the prose that explains them. */
+  font-size: clamp(1.875rem, 3vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.statLabel {
+  max-width: 22ch;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+/* ---- Images ------------------------------------------------------------- */
+
+/*
+ * No panel. The images sit on the page directly, which suits the product
+ * renders on transparency; the light UI captures do then meet the dark canvas
+ * with a hard edge of their own, which is the trade taken deliberately.
+ */
+.figure {
+  margin: 0;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/*
+ * Theme swap, the same mechanism the logos use elsewhere. Dark is the :root
+ * default, so the light-theme artwork starts hidden and the pair trade places
+ * under the attribute the pre-paint script sets — no flash, no JS.
+ */
+.onLight {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onDark {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onLight {
+  display: block;
+}
+
+/*
+ * A mark, not a photograph. The cards render fills its column because it is a
+ * scene; a logo blown up to the same width would dominate the section it is
+ * only there to identify.
+ */
+.figureMark {
+  display: flex;
+  justify-content: center;
+}
+
+.figureMark .image {
+  width: auto;
+  max-width: min(100%, 18rem);
+}
+
+/* Same selector, same specificity as the rule above — this has to come AFTER
+   it in the file to win at narrow widths; a media query adds no specificity of
+   its own, only source order breaks the tie between two equal-specificity
+   rules. The mark's 18rem cap was tuned for sitting beside the facts column on
+   a wide screen; stacked full-width on a phone that reads as oversized, since
+   nothing else on the page gets that large. */
+@media (max-width: 64rem) {
+  .figureMark .image {
+    max-width: min(45%, 9rem);
+  }
+}
+
+/* The phone screens are tall and narrow; side by side they stay a readable size
+   instead of each running the full measure. */
+/*
+ * Flex, not two equal columns. On a full-width page each 1fr track was far
+ * wider than the phone standing in it, so most of the space between them was
+ * empty column rather than the gap — the images sat marooned at the centre of
+ * their own halves. Sized to content, the gap is the only space between them.
+ */
+.screens {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* Centred on the page rather than aligned to the prose. The pair is a plate,
+     not part of the reading column, and sizing it to content means it would
+     otherwise sit off to one side of a wide page. */
+  justify-content: center;
+  gap: 3rem;
+}
+
+.screens .figure {
+  display: flex;
+  align-items: center;
+}
+
+/*
+ * Capped by HEIGHT, not width. These are two phone renders of different
+ * proportions — one upright at 656x1345, one angled at 1324x1542 — and a shared
+ * width cap blows the upright one up until it towers over the page. A shared
+ * height is what makes them read as two photographs of the same device.
+ */
+.screens .image {
+  width: auto;
+  max-width: 100%;
+  max-height: 38rem;
+}
+
+.evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---- Process ------------------------------------------------------------ */
+
+.process {
+  --process-gap: 2rem;
+
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--process-gap);
+  margin-top: 0.5rem;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  /* Narrow and fixed, so the rail below has a known centre to sit on. */
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.25rem 1.25rem;
+}
+
+/*
+ * The rail beside the numbers, borrowed from the resume timeline, so the steps
+ * read as a sequence rather than three paragraphs that happen to be numbered.
+ */
+.step::before {
+  content: "";
+  position: absolute;
+  /* Half the number column, less half its own width, to sit centred. */
+  left: calc(1rem - 0.5px);
+  top: 1.75rem;
+  /* Reaches into the list's own gap, so it meets the next number. */
+  bottom: calc(var(--process-gap) * -1);
+  width: 1px;
+  background-color: var(--border);
+}
+
+/* The last step has no next number to reach, so its line stops with its own
+   text rather than trailing into the space below the list. */
+.step:last-child::before {
+  bottom: 0;
+}
+
+/* Drawn rather than a list marker, so it can be styled down to a quiet index
+   instead of competing with the step's title. */
+.stepNumber {
+  grid-row: 1 / span 2;
+  /* Centred over the rail rather than ranged left beside it. */
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.stepTitle {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+@media (max-width: 60rem) {
+  /* One column: at this width the facts column is too narrow to hold a value
+     like "Senior product designer" on one line. */
+  .overview {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  /* One column now, so there is no second track to sit in. */
+  .narrative {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 48rem) {
+  .screens {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .step {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.375rem;
+  }
+
+  /* The index moves above the title once there is no column beside it. */
+  .stepNumber {
+    grid-row: auto;
+    text-align: left;
+  }
+
+  /* No column for the rail to run down any more. */
+  .step::before {
+    content: none;
+  }
+}
+
+
+/* ---- Customer feedback -------------------------------------------------- */
+
+/*
+ * A container, which is what lets everything inside be sized in cqi — 1% of the
+ * board's own width. Together with the fixed ratio and the percentage placements
+ * the component sets, the whole composition scales as a single piece at any
+ * width: it never reflows, it only gets smaller, exactly as the flat image it
+ * replaces did.
+ */
+/*
+ * Full width, breaking out of the page's 96rem measure. The mosaic is a plate
+ * rather than part of the reading column, and held to the measure it left a
+ * wide band of empty page either side of it.
+ *
+ * 100% here is the content width, so half of it minus half the viewport is
+ * exactly the margin to pull back by.
+ */
+.board {
+  container-type: inline-size;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: 0.5rem;
+  /* The cards sit close to the edges; nothing should be able to spill past. */
+  overflow: hidden;
+}
+
+.boardStage {
+  position: relative;
+  /* The artwork's own proportions, so the measured positions land correctly. */
+  aspect-ratio: 16 / 9;
+}
+
+.card {
+  position: absolute;
+  margin: 0;
+  padding: 1.4cqi;
+  background-color: #ffffff;
+  border-radius: 1.6cqi;
+  box-shadow:
+    0 0.1cqi 0.3cqi rgba(0, 0, 0, 0.05),
+    0 1cqi 2.4cqi rgba(0, 0, 0, 0.09);
+}
+
+.quote {
+  display: flex;
+  /* Centred, so a one-line comment does not leave the memoji floating above a
+     short line of text. */
+  align-items: center;
+  gap: 1.2cqi;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 4.5cqi;
+  height: 4.5cqi;
+  object-fit: contain;
+}
+
+.quoteBody {
+  margin: 0;
+  font-size: 1cqi;
+  line-height: 1.45;
+  /* Fixed ink, because the cards are fixed white in both themes — the memoji
+     they carry were captured on white and cannot be recoloured. */
+  color: #1a1a1a;
+  text-wrap: pretty;
+}
+
+/*
+ * The marks sit inside two of the empty cards, as in the original, rather than
+ * floating loose on the board.
+ */
+.mark {
+  position: absolute;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 7cqi;
+  line-height: 1;
+  /*
+   * Follows the theme, unlike the cards. These sit on the page itself rather
+   * than on a bubble, so a fixed white disappeared entirely against the light
+   * canvas. The cards below stay fixed white because the memoji they carry were
+   * captured on white and cannot be recoloured.
+   */
+  color: var(--text-primary);
+}
+
+/*
+ * Gradient sampled from the artwork: light at the top right, deepening toward
+ * the bottom left. Clipped to the glyphs, with the text colour made transparent
+ * so the gradient shows through.
+ */
+.wordmark {
+  position: absolute;
+  /*
+   * Centred on the board on both axes, rather than placed by a measured corner.
+   * The text is left-aligned inside its own box, so positioning by the corner
+   * left it sitting noticeably left of centre once the shorter second line was
+   * taken into account.
+   */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 34%;
+  margin: 0;
+  text-align: center;
+  font-size: 5.1cqi;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  /*
+   * Stops weighted toward the light end. Spread evenly, the lightest blue fell
+   * on the empty corner of the box rather than on any glyph, and the wordmark
+   * came out a flat mid-blue — the original runs from a pale sky blue on
+   * "Customer" down to near-navy on "feedback."
+   */
+  background-image: linear-gradient(200deg, #93d6fa 0%, #62b4ea 26%, #3b82cc 52%, #1d51a4 76%, #123a80 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+
+/* ---- Conclusion --------------------------------------------------------- */
+
+.closing {
+  align-items: center;
+  text-align: center;
+}
+
+/*
+ * Wider measure than the body default as well as a larger size — centred text
+ * is harder to track line to line, so the two have to move together or it reads
+ * as a wall.
+ */
+.closingBody {
+  max-width: 46ch;
+  margin: 0 auto;
+  font-size: clamp(1.125rem, 1.9vw, 1.5rem);
+  line-height: 1.6;
+}

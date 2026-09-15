@@ -1,0 +1,27 @@
+/*
+ * The headline treatment, shared by the home page and every level-two page so
+ * the type is identical across the site. Composed into each page's own .hero
+ * rule rather than duplicated — the intro's flying word has to land on exactly
+ * these metrics, so a copy that drifted would break the handoff silently.
+ */
+.heroType {
+  /*
+   * fit-content is load-bearing, not cosmetic. As a block element this would
+   * measure the full width of its container, and the intro would scale the
+   * flying word to that instead of to the word — expanding far too far, then
+   * appearing to shrink when the real hero was swapped in at its true size.
+   * Hugging the text means the measured box IS the word.
+   */
+  width: fit-content;
+  margin: 0 auto;
+  font-size: var(--hero-size);
+  font-weight: 500;
+  /* Weight, tracking and line-height must match the intro line exactly; only
+     the size may differ, or the swap at the end of the flight will show. */
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--emphasis);
+  /* Titles run to several words, and must stay on one line or the content
+     below would be shoved down. */
+  white-space: nowrap;
+}

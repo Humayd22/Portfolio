@@ -1,0 +1,32 @@
+/*
+ * Fills the card behind its content. The card clips this with its own radius,
+ * so nothing here needs to know the corner size.
+ *
+ * No tint, no overlay — the artwork renders exactly as authored.
+ *
+ * The white ground is not a colour choice, it is the backdrop the file assumes.
+ * The animation is eight blurred blobs on a transparent canvas with no
+ * background layer of its own, so wherever a blob does not reach, whatever sits
+ * behind shows through — which on a dark card reads as black wedges at the
+ * edges. The reference demo supplies exactly this: background-color #ffffff on
+ * both the body and the player's container.
+ */
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: #ffffff;
+}
+
+.player {
+  position: absolute;
+  inset: 0;
+}
+
+/* The player sets inline width/height from the composition size, so these have
+   to win to make it fill the card. */
+.player svg {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}

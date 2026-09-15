@@ -1,0 +1,88 @@
+.tabbed {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/*
+ * Equal columns, which is what makes the sliding indicator possible without
+ * measuring anything: every tab is the same width, so the indicator is one
+ * n-th wide and travels by whole multiples of itself.
+ */
+.tabs {
+  position: relative;
+  /* Tabs take their natural widths; the indicator is measured to match the
+     selected one rather than assuming they are equal. */
+  display: flex;
+  align-self: flex-start;
+  padding: 0.25rem;
+  background-color: var(--surface);
+  border-radius: 999px;
+}
+
+.indicator {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  /* Both set by Tabs.tsx from the selected button's own box. The fallbacks
+     cover the first paint, before the measurement has run. */
+  width: var(--tab-w, 6rem);
+  height: calc(100% - 0.5rem);
+  background-color: var(--emphasis);
+  border-radius: 999px;
+  /* offsetLeft is measured from the strip's border box, and this sits 0.25rem
+     inside it, so the padding is taken back off. */
+  transform: translateX(calc(var(--tab-x, 0.25rem) - 0.25rem));
+  transition:
+    transform 300ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    width 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.tab {
+  /* Above the indicator, which is why it can slide behind the labels. */
+  position: relative;
+  z-index: 1;
+  padding: 0.625rem 1.25rem;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 300ms ease;
+}
+
+/*
+ * The selected label sits on the filled indicator, so it takes the page colour.
+ * --canvas, not --bg: --bg is an alpha token and would be near-invisible here.
+ */
+.tab[aria-selected="true"] {
+  color: var(--canvas);
+}
+
+.tab:not([aria-selected="true"]):hover {
+  color: var(--text-primary);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 3px;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indicator {
+    transition: none;
+  }
+}
+
+@media (max-width: 34rem) {
+  .tab {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+  }
+}

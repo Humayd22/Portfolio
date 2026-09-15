@@ -1,40 +1,39 @@
-import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
+import { BentoGrid } from "@/components/BentoGrid/BentoGrid";
+import { HeroLabelProvider } from "@/components/HeroLabel/HeroLabel";
+import { HeroWord } from "@/components/HeroWord/HeroWord";
+import { IntroSequence } from "@/components/IntroSequence/IntroSequence";
+import { PageTransition } from "@/components/PageTransition/PageTransition";
+import { TopBar } from "@/components/TopBar/TopBar";
+import { INTRO_WORDS } from "@/lib/intro";
 import styles from "./page.module.css";
 
-// Every semantic token, so a glance confirms each one composites
-// correctly over the canvas in both themes.
-const SEMANTIC_TOKENS = [
-  "--bg",
-  "--surface",
-  "--surface-hover",
-  "--border",
-  "--text-primary",
-  "--text-secondary",
-  "--text-muted",
-  "--emphasis",
-] as const;
-
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <header className={styles.header}>
-        <h1 className={styles.name}>Humayd Mohamed</h1>
-        <p className={styles.tagline}>Design and engineering.</p>
-        <ThemeToggle />
-      </header>
+  // The same string the intro ends on. The flying word lands on this element,
+  // so if the two ever diverge the handoff geometry stops matching.
+  const heroWord = INTRO_WORDS[INTRO_WORDS.length - 1];
 
-      <section className={styles.swatches} aria-label="Semantic token swatches">
-        {SEMANTIC_TOKENS.map((token) => (
-          <div key={token} className={styles.swatch}>
-            <div
-              className={styles.chip}
-              style={{ backgroundColor: `var(${token})` }}
-              aria-hidden="true"
-            />
-            <code className={styles.label}>{token}</code>
-          </div>
-        ))}
-      </section>
-    </main>
+  return (
+    <>
+      <IntroSequence />
+
+      {/* The overlay above stays outside the transition — it is a first-load
+          effect, and wrapping it would animate it on every return here. */}
+      <PageTransition>
+        <div className={styles.page}>
+          <TopBar />
+
+          <main className={styles.main}>
+            {/* Wraps both: the cards write the headline, the headline reads it. */}
+            <HeroLabelProvider>
+              <HeroWord fallback={heroWord} className={styles.hero} />
+
+              <div className={styles.gridWrap}>
+                <BentoGrid />
+              </div>
+            </HeroLabelProvider>
+          </main>
+        </div>
+      </PageTransition>
+    </>
   );
 }

@@ -1,0 +1,55 @@
+/*
+ * Icon only, but with a padded hit area. The glyph is arrow-sized so it sits
+ * symmetrically with the LinkedIn card's arrow — the target around it is larger
+ * than what is drawn, because this one is a real button rather than decoration
+ * inside a link.
+ */
+.copy {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin: -0.4375rem;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.copy:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.copy:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 3px;
+}
+
+/* Matched to the arrow on the LinkedIn card, so the two cards balance. */
+.icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/*
+ * Visually gone, still announced. display: none or visibility: hidden would
+ * take it out of the accessibility tree too, which defeats the point of a live
+ * region.
+ */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

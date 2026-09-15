@@ -1,57 +1,72 @@
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
 .main {
-  max-width: 56rem;
+  flex: 1;
+  /* min-height: 0 lets the grid below shrink inside the flex column instead of
+     forcing the page taller than the viewport. */
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 96rem;
   margin: 0 auto;
-  padding: 6rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 5rem;
+  padding: 0 1.25rem 1.25rem;
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
+/*
+ * The hero word sits behind the grid, not above it. The grid is pulled up over
+ * its lower portion and its cards are frosted, so the word reads sharp where it
+ * is exposed and blurred where the glass covers it. z-index 0 (rather than
+ * auto) puts it in the same stacking context as the grid so the order is
+ * explicit.
+ */
+.hero {
+  composes: heroType from "../styles/hero.module.css";
+  position: relative;
+  z-index: 0;
+  flex: none;
 }
 
-.name {
-  font-size: clamp(2.5rem, 8vw, 4.5rem);
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  color: var(--text-primary);
-  /* Dark-mode signature; resolves to `none` under [data-theme="light"]. */
-  text-shadow: var(--name-glow);
+/*
+ * The overlap, expressed as a fraction of the word's own size so the
+ * composition holds at every viewport: the grid always covers the bottom ~42%
+ * of the letterforms, which is what gives the glass something to blur.
+ */
+.gridWrap {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  margin-top: calc(var(--hero-size) * -0.42);
 }
 
-.tagline {
-  font-size: 1.125rem;
-  color: var(--text-secondary);
+/*
+ * Above this width the whole composition is meant to sit in one screen, with
+ * the grid taking whatever height the hero leaves. Below it, there is not
+ * enough room to be worth forcing, so the page scrolls normally.
+ */
+@media (min-width: 64rem) {
+  .page {
+    height: 100dvh;
+    overflow: hidden;
+  }
 }
 
-.swatches {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-  gap: 1rem;
+/*
+ * The home page is fully laid out underneath the whole time — only opacity and
+ * transform ever change, so nothing reflows when it is revealed. visibility
+ * (rather than opacity) keeps it out of the tab order while hidden, and still
+ * lets the intro measure the hero's box to fly to.
+ */
+:global(html[data-intro="play"]) .page,
+:global(html[data-intro="handoff"]) .page {
+  visibility: hidden;
 }
 
-.swatch {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-}
-
-.chip {
-  height: 3rem;
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-}
-
-.label {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
+:global(html[data-intro="done"]) .page {
+  visibility: visible;
 }

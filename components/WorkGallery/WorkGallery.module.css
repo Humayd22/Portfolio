@@ -1,0 +1,176 @@
+.work {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---- The control -------------------------------------------------------- */
+
+/*
+ * Pushed to the right, with anything that appears alongside it sitting to its
+ * left — so the control itself never moves as the hint and Reset come and go.
+ */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem 1rem;
+}
+
+/*
+ * Text and an icon, matching the Back control rather than the filled pills on
+ * the resume. Nothing here is a call to action — it is an offer, and a filled
+ * button would have claimed more of the page than the feature deserves.
+ */
+.toggle {
+  /* The project's reset only normalises font and color on buttons, so the UA's
+     own fill, border and padding survive without this — which is what made
+     this read as a pill rather than as text. */
+  background: none;
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.toggle:hover,
+.toggle[aria-pressed="true"] {
+  color: var(--text-primary);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.toggleIcon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.reset {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.reset:hover {
+  color: var(--text-primary);
+}
+
+.reset:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+/* ---- Swatches ----------------------------------------------------------- */
+
+/*
+ * Sits inside the card, directly on its artwork with no panel behind it. Each
+ * swatch carries its own hairline, which is enough to separate it from a wash
+ * this pale, and the strip is pinned to the foot so it never crosses the copy.
+ */
+.picker {
+  position: absolute;
+  z-index: 2;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.swatch {
+  width: 2.75rem;
+  height: 1.875rem;
+  border-radius: 0.5rem;
+  /* The frame itself is the label. Cropped as the card crops it, so a swatch
+     previews the actual result rather than the whole composition. */
+  background-color: #ffffff;
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.swatch:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Ringed rather than merely tinted: these sit on artwork of every hue, and a
+   colour change alone would read differently on each card. */
+.swatch[aria-pressed="true"] {
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.2),
+    0 0 0 2px var(--accent);
+}
+
+.swatch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* No frame to show, so it says what it does. */
+.animate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  padding: 0 0.6875rem;
+  background-color: rgba(0, 0, 0, 0.82);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+}
+
+/* ---- Grid --------------------------------------------------------------- */
+
+/*
+ * Two per row. minmax(0, …) so a long unbroken word in a title cannot force a
+ * column wider than its share.
+ */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+/* One per row once two would be too narrow to carry an image plus two stats. */
+@media (max-width: 60rem) {
+  .projects {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swatch,
+  .swatch:hover {
+    transition: none;
+    transform: none;
+  }
+}

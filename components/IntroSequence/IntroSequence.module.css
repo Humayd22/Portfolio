@@ -1,0 +1,260 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: var(--bg);
+}
+
+/*
+ * The server renders the overlay for everyone, since it cannot know who has
+ * already seen it. This hides it before first paint for those who opted out or
+ * already watched it — the React tree drops it a moment later at hydration.
+ */
+:global(html[data-intro="skip"]) .overlay {
+  display: none;
+}
+
+/*
+ * The overlay keeps its background through the whole handoff. It is the same
+ * near-black as the page beneath, so there is nothing to fade — and "Design"
+ * never leaves the screen, it becomes the hero. Fading the overlay would drag
+ * the word down with it.
+ */
+.overlay[data-phase="leaving"] {
+  pointer-events: none;
+}
+
+.skip {
+  /* Arrives with the first word so the opening beat is a genuinely empty
+     screen, not an empty screen with a button on it. */
+  opacity: 0;
+  animation: word-in var(--intro-fade) cubic-bezier(0.65, 0, 0.35, 1)
+    var(--intro-lead-in) forwards;
+
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  padding: 0.5rem 0.875rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.skip:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.overlay[data-phase="leaving"] .skip {
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
+/*
+ * Every word occupies its final position from the first frame, invisible.
+ * The line therefore never reflows as words arrive — they resolve in place
+ * rather than pushing their neighbours around. position: relative makes this
+ * the offset parent, so the sweep distance can be measured against it.
+ */
+.line {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /*
+   * Row gap only. The space before "Design." is deliberately NOT a flex gap —
+   * it lives inside the group as padding instead (see .group), so the group's
+   * box ends exactly where Design begins. A flex gap would leave a strip of
+   * empty track between the wipe boundary and the D, and letters would be seen
+   * being cut in open space rather than disappearing under the word.
+   *
+   * Row gap carries the spacing when this wraps on narrow screens, so
+   * line-height can stay at 1 — see below.
+   */
+  gap: 0.25em 0;
+  max-width: 100%;
+  font-size: clamp(1.375rem, 4.6vw, 3.25rem);
+  font-weight: 500;
+  /*
+   * Weight, tracking and line-height are held identical to the home page's
+   * hero word; only font-size differs. line-height in particular: at 1.2 the
+   * half-leading would sit the glyph lower in its box than the hero's does,
+   * so aligning the two boxes would leave the letters themselves misaligned
+   * and the swap would show as a small vertical jump.
+   */
+  letter-spacing: -0.02em;
+  line-height: 1;
+  text-align: center;
+}
+
+/*
+ * Holds the three S-words so they can exit as one piece. Inherits the line's
+ * own spacing so wrapping it changes nothing about the layout — the words sit
+ * exactly where they would if they were direct children.
+ */
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25em 0.4em;
+  /*
+   * The space between this block and "Design.", carried as padding rather than
+   * as the line's flex gap. Visually identical, but it puts the space inside
+   * the clipped box — so the wipe boundary reaches Design's leading edge and
+   * the letters vanish under the word instead of being sliced beside it.
+   *
+   * This also makes the clip arithmetic come out exactly: the group's own
+   * width becomes twice the convergence distance, so animating the inset from
+   * 0% to 100% tracks Design's edge precisely for the whole travel.
+   */
+  padding-right: 0.4em;
+}
+
+.word,
+.payoff {
+  opacity: 0;
+  /*
+   * Opacity only — no transform, no filter, so it stays on the compositor.
+   *
+   * The curve matters more than the duration here. ease-out front-loads the
+   * change: a word reaches most of its opacity in the first third and then
+   * creeps, which reads as appearing instantly no matter how long the fade
+   * nominally lasts. A symmetric curve spends real time near zero, so the word
+   * is genuinely seen arriving.
+   */
+  animation: word-in var(--intro-fade) cubic-bezier(0.65, 0, 0.35, 1)
+    var(--word-delay, 0ms) forwards;
+}
+
+.word {
+  color: var(--text-secondary);
+}
+
+/* "Design" breaks the rhythm the three S-words set up, so it arrives at full
+   strength while the others stay recessive. Contrast, not colour. */
+.payoff {
+  color: var(--emphasis);
+  will-change: transform;
+}
+
+@keyframes word-in {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- The sweep ---------------------------------------------------------- */
+
+/*
+ * Design's entrance animation ran with `forwards`, so its held opacity is
+ * discarded the moment the rule below swaps that animation out. Re-asserting
+ * opacity: 1 is what stops it blinking off for a frame. The S-words keep their
+ * entrance animation untouched — the group fades them collectively instead.
+ */
+.overlay[data-phase="leaving"] .payoff {
+  opacity: 1;
+}
+
+/*
+ * The S-words leave together, as one block travelling right, over exactly the
+ * same window that Design spends travelling left. Equal and opposite, so the
+ * two halves meet in the middle. The animation is on the group, not the words —
+ * putting it on the words is what made the line unravel one at a time.
+ */
+.overlay[data-phase="leaving"] .group {
+  animation: erase var(--intro-sweep) linear forwards;
+}
+
+/*
+ * Two legs of one journey, both on transform.
+ *
+ * The sweep is linear on purpose. Eased motion would cover most of the ground
+ * in its first third and then crawl, so Design would arrive at the midpoint
+ * long before the words closing in from the other side got there. Constant
+ * speed is what makes the two halves meet.
+ *
+ * The flight then lifts it into the hero position. It is listed second, so it
+ * wins the transform once it starts — picking up exactly where the sweep's
+ * held final frame left off.
+ *
+ * Every distance here is measured in JS at transition time and set on this
+ * element inline; the CSS only says when and how, never how far.
+ */
+.overlay[data-phase="leaving"] .payoff {
+  transform-origin: top left;
+  animation:
+    design-sweep var(--intro-sweep) linear forwards,
+    design-to-hero var(--intro-flight) var(--intro-easing)
+      var(--intro-flight-delay) forwards;
+}
+
+/*
+ * Travels right while being consumed from its own leading edge.
+ *
+ * A fade cannot work here: the group's right edge starts flush against
+ * "Design.", so the two overlap from the very first frame and any partial
+ * opacity shows one set of letterforms through the other. Clipping removes the
+ * pixels outright — the words are gone where they meet Design, not merely
+ * faint, and nothing trails behind once it has passed.
+ *
+ * Both insets are percentages so they interpolate; mixing a bare 0 with a
+ * percentage gives an uninterpolable pair and the clip would simply jump.
+ */
+@keyframes erase {
+  from {
+    transform: none;
+    clip-path: inset(0% 0% 0% 0%);
+  }
+  to {
+    transform: translateX(var(--converge, 0));
+    clip-path: inset(0% 100% 0% 0%);
+  }
+}
+
+/* Design closes on the same midpoint from the opposite side. */
+@keyframes design-sweep {
+  to {
+    transform: translateX(var(--converge, 0));
+  }
+}
+
+/*
+ * From the midpoint, up and out to the home page hero's exact box. Stated
+ * explicitly rather than relying on the previous animation's held value, so
+ * this leg is self-contained.
+ */
+@keyframes design-to-hero {
+  from {
+    transform: translateX(var(--converge, 0));
+  }
+  to {
+    transform: translate(var(--hero-dx, 0), var(--hero-dy, 0))
+      scale(var(--hero-scale, 1));
+  }
+}
+
+/*
+ * Belt and braces: the pre-paint script already skips the intro entirely for
+ * these users, but if it were ever bypassed nothing here would move.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .word,
+  .payoff,
+  .overlay[data-phase="leaving"] .group,
+  .overlay[data-phase="leaving"] .payoff {
+    animation: none;
+    opacity: 1;
+  }
+
+  .overlay[data-phase="leaving"] {
+    transition: none;
+  }
+}

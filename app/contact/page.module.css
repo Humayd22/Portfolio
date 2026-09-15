@@ -1,0 +1,164 @@
+/*
+ * Constrained, not full width. The page carries very little, and letting it
+ * stretch across the whole measure is what made it read as fragments scattered
+ * in empty space rather than a composed block.
+ */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 46rem;
+}
+
+.methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+/* ---- Cards -------------------------------------------------------------- */
+
+/*
+ * The same card language as the bento grid and project cards, so this page
+ * belongs to the rest of the site rather than inventing a treatment.
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.5rem;
+  min-height: 12rem;
+  padding: 1.25rem;
+  background-color: var(--surface);
+  border-radius: 1.25rem;
+  transition: background-color 250ms ease;
+}
+
+a.card:hover {
+  background-color: var(--surface-hover);
+}
+
+a.card:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 3px;
+}
+
+/* The preferred route, so it carries the filled treatment. */
+.primary {
+  background-color: var(--text-primary);
+  /* --canvas, not --bg: --bg is an alpha token and near-invisible on a fill. */
+  color: var(--canvas);
+}
+
+.primary:hover {
+  background-color: var(--text-primary);
+  opacity: 0.88;
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+}
+
+.value {
+  font-size: 0.875rem;
+  /* Dimmed against the fill rather than given a token — the text tokens are
+     keyed to the page, and this sits on an inverted surface. */
+  opacity: 0.65;
+}
+
+.email {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  /* Long addresses break rather than push the card wider. */
+  overflow-wrap: anywhere;
+  transition: color 200ms ease;
+}
+
+.email:hover {
+  color: var(--text-primary);
+}
+
+.email:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+.iconPlate {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--surface-hover);
+  border-radius: 0.625rem;
+}
+
+/*
+ * On the filled card the surface tokens are the wrong ground entirely — they
+ * are keyed to the page, and this sits on an inverted fill. Mixing the card's
+ * own text colour gives a plate that works whichever way the fill flips.
+ */
+.primary .iconPlate {
+  background-color: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+/* Inherits, so it is dark on the white card and light on the black one. */
+.icon {
+  width: 1.375rem;
+  height: 1.375rem;
+  color: inherit;
+}
+
+.arrow {
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  transition: transform 250ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+a.card:hover .arrow {
+  transform: translate(2px, -2px);
+}
+
+/* ---- Meta --------------------------------------------------------------- */
+
+.meta {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow,
+  a.card:hover .arrow {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .methods {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    min-height: 0;
+    gap: 1.5rem;
+  }
+}

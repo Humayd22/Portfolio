@@ -31,6 +31,15 @@
   --white-900: rgba(255, 255, 255, 0.9);
   --white-1000: #ffffff;
 
+  /*
+   * Accent — the one hue in an otherwise monochrome system, currently used by
+   * the résumé timeline's scroll progress. Two values rather than one because
+   * a single blue cannot sit well on both canvases: the lighter step is for the
+   * dark theme, the deeper one for light, mirroring how the alpha ramps work.
+   */
+  --blue-400: #5aa2ff;
+  --blue-600: #1d63d6;
+
   /* Canvases — the solid ground every alpha value composites over */
   --canvas-dark: #0a0a0a;
   --canvas-light: #ffffff;

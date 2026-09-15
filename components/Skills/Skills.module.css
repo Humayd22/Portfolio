@@ -1,0 +1,81 @@
+.skills {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.heading {
+  composes: sectionHeading from "../../styles/section.module.css";
+}
+
+/*
+ * A wrapping row rather than a grid: the chips are all different widths, and a
+ * grid would either stretch them to a common column or leave ragged gaps. Flex
+ * wrap lets each one take exactly the width of its words.
+ */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  /*
+   * Half the page, so the set wraps into a dense block rather than stringing
+   * out into one long line. The constraint is what gives it shape — at full
+   * width the chips read as a scattered row instead of a group.
+   */
+  max-width: 50%;
+  /* It is a <ul>, so the browser's bullets and indent have to go. */
+  list-style: none;
+  padding: 0;
+}
+
+.chip {
+  padding: 0.6rem 1rem;
+  background-color: var(--surface);
+  /* Softened rectangle, not a pill: a full round on labels this long turns the
+     ends into large empty caps and the set stops reading as a grid of terms. */
+  border-radius: 0.625rem;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* The one chip that does something, so it gets the affordances the rest do not. */
+.more {
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.more:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.more:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 3px;
+}
+
+/*
+ * The same breakpoint the About page stacks at. Below it there is no width to
+ * give away, so the chips take the full measure.
+ */
+@media (max-width: 60rem) {
+  .chips {
+    max-width: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .chip {
+    padding: 0.5rem 0.8125rem;
+    font-size: 0.875rem;
+    /* Long labels are allowed to wrap on a phone — nowrap would push the widest
+       chips past the edge of the screen. */
+    white-space: normal;
+  }
+}

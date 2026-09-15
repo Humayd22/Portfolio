@@ -1,0 +1,187 @@
+.viewport {
+  width: 100%;
+  /*
+   * Vertical room for the hover bubble. overflow: hidden clips in both
+   * directions, so a tooltip drawn above a tile would be cut off without this
+   * padding — the space has to exist inside the clipped box, not outside it.
+   * Symmetrical so the tiles stay optically centred in the card.
+   */
+  padding: 2.25rem 0;
+  overflow: hidden;
+  /*
+   * Feathers both ends so tiles dissolve rather than being sliced by the card
+   * edge. A mask rather than an overlaid gradient, because the card is
+   * translucent — a gradient painted in the page colour would be visible as a
+   * solid smear against the blurred hero word behind it.
+   *
+   * The #000 stops are not a colour: only the alpha channel of a mask is read,
+   * so these mean "opaque here". They are theme-independent and are the one
+   * legitimate literal outside primitives.css besides --name-glow.
+   */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+}
+
+/*
+ * Spacing lives on the tiles as margin, NOT as a flex gap on the track. With a
+ * gap of G and 2N tiles, the track is 2N tiles + (2N-1) gaps, so -50% lands
+ * half a gap short of one full copy — the list jolts back by that much every
+ * cycle. Giving every tile a trailing margin makes the track exactly
+ * 2N x (tile + margin), so -50% is precisely one copy and the seam vanishes.
+ */
+.track {
+  display: flex;
+  align-items: center;
+  /* Sized by content, so -50% is always exactly one full copy of the list. */
+  width: max-content;
+  animation: marquee var(--marquee-duration, 18s) linear infinite;
+}
+
+/*
+ * Constant speed. Any easing would make the row visibly hesitate once per
+ * cycle, which is exactly the seam the duplicate list exists to hide.
+ */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  /* The spacing — see .track. Every tile carries its own, including the last,
+     so both copies measure identically. */
+  margin-right: 0.75rem;
+  border-radius: 1rem;
+  background-color: var(--surface-hover);
+}
+
+.logo {
+  width: 55%;
+  height: 55%;
+  object-fit: contain;
+}
+
+/*
+ * The hover bubble. Inverted against the page — a filled chip in the text
+ * colour with page-coloured type — so it reads as sitting above the surface
+ * rather than being another panel on it, and it stays legible in both themes
+ * without a second rule.
+ */
+.tile::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  z-index: 1;
+  padding: 0.3rem 0.5rem;
+  background-color: var(--text-primary);
+  border-radius: 0.5rem;
+  /*
+   * --canvas, not --bg. --bg is an alpha token (black/050 in light mode) that
+   * only resolves to the page colour by compositing over the canvas beneath it.
+   * As a foreground it is just 5% black — invisible on this chip. --canvas is
+   * the opaque page colour and is what "the inverse of the text" actually
+   * means.
+   */
+  color: var(--canvas);
+  font-size: 0.75rem;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  opacity: 0;
+  /* Never intercepts the pointer, or the bubble would cover the tile that
+     spawned it and flicker as hover was lost and regained. */
+  pointer-events: none;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.tile:hover::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile::after {
+    transition: opacity 120ms ease;
+    transform: translate(-50%, 0);
+  }
+}
+
+/*
+ * Theme swap for icons supplied as a pair. Dark is the :root default, so the
+ * light-theme artwork starts hidden and the two trade places under
+ * [data-theme="light"]. Driven by the same attribute the pre-paint script sets,
+ * so the correct icon is present on the first frame — no flash, no JS. Icons
+ * supplied as a single file carry neither class and are unaffected.
+ */
+/*
+ * Monochrome marks disappear against a ground of their own value, and it cuts
+ * both ways: flat-black artwork (GitHub, Vercel, Next.js) is invisible on the
+ * dark theme, flat-white artwork (Weavy) is invisible on the light one.
+ * Inverting swaps black for white, which is exactly what each brand's opposite
+ * variant looks like.
+ *
+ * Only ever applied to genuinely monochrome icons: inverting a coloured mark
+ * would swap it for its hue complement.
+ */
+
+/* Black artwork. Dark is the :root default, so the filter applies immediately
+   and is lifted on the light theme, where the original is correct. */
+.invertOnDark {
+  filter: invert(1);
+}
+
+:global(html[data-theme="light"]) .invertOnDark {
+  filter: none;
+}
+
+/* White artwork — the opposite case, so it only flips on the light theme. */
+:global(html[data-theme="light"]) .invertOnLight {
+  filter: invert(1);
+}
+
+.onLight {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onDark {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onLight {
+  display: block;
+}
+
+@media (max-width: 40rem) {
+  .tile {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.875rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

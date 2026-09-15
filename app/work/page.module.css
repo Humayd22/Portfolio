@@ -1,0 +1,4 @@
+/* The gallery owns its own rhythm; this is just the page slot. */
+.work {
+  display: contents;
+}

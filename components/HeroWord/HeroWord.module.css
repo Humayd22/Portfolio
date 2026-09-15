@@ -1,0 +1,81 @@
+.hero {
+  /* Anchors the stacked readouts. */
+  position: relative;
+}
+
+/*
+ * One resting state does both halves of the animation. Inactive means "sitting
+ * low and invisible", so a readout leaving travels down into it, and a readout
+ * arriving travels up out of it — the fall and the rise are the same
+ * declaration read in opposite directions.
+ *
+ * Enter and exit get different transitions, declared on the two states. Exit is
+ * quicker and gets out of the way; entry is slower and glides. Matching them
+ * makes the swap feel mechanical.
+ */
+.base,
+.slot {
+  display: block;
+  opacity: 0;
+  /*
+   * Leaving. A symmetric curve on opacity: an ease-out here would dump most of
+   * the fade into the first few frames and read as a blink rather than a fall.
+   */
+  transition:
+    opacity 340ms cubic-bezier(0.4, 0, 0.6, 1),
+    transform 400ms cubic-bezier(0.4, 0, 0.7, 1);
+}
+
+.base {
+  transform: translateY(0.42em);
+}
+
+.slot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  white-space: nowrap;
+  transform: translate(-50%, 0.42em);
+}
+
+/*
+ * Arriving. Long, heavily decelerated travel so the word settles rather than
+ * arrives — most of the distance is covered early and the last few pixels take
+ * their time, which is what reads as weight. The delay lets the outgoing text
+ * clear first; without it the two cross at half opacity and the headline looks
+ * like a smear.
+ */
+.base[data-active],
+.slot[data-active] {
+  opacity: 1;
+  transition:
+    opacity 520ms cubic-bezier(0.4, 0, 0.6, 1) 140ms,
+    transform 720ms cubic-bezier(0.16, 1, 0.3, 1) 140ms;
+}
+
+.base[data-active] {
+  transform: none;
+}
+
+.slot[data-active] {
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .base,
+  .slot,
+  .base[data-active],
+  .slot[data-active] {
+    transition: opacity 160ms ease;
+  }
+
+  .base,
+  .base[data-active] {
+    transform: none;
+  }
+
+  .slot,
+  .slot[data-active] {
+    transform: translate(-50%, 0);
+  }
+}

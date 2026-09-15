@@ -6,6 +6,28 @@
 :root {
   --font-sans-fallback: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Helvetica, Arial, sans-serif;
+
+  /*
+   * The headline size, shared by every page. Capped against viewport height as
+   * well as width, so a short window shrinks the word instead of pushing the
+   * content below it off screen — these layouts are height-constrained, not
+   * just width-constrained. Lives here rather than on a page wrapper because
+   * both the home page's grid overlap and the shared hero type read from it.
+   */
+  --hero-size: min(11vw, 17vh, 9rem);
+
+  /*
+   * The rhythm between sections on level-two pages. Declared once so a page
+   * cannot invent its own spacing and drift out of step with the rest.
+   */
+  --section-gap: clamp(5rem, 13vh, 10rem);
+
+  /*
+   * Headline to the first thing under it. Smaller than the gap between
+   * sections: those separate whole subjects, whereas this one separates a page
+   * from its own opening line, which belongs with it.
+   */
+  --headline-gap: clamp(1.25rem, 2.6vh, 2rem);
 }
 
 *,
@@ -25,6 +47,11 @@ html {
 
 body {
   min-height: 100dvh;
+  /* clip, not hidden: full-bleed sections use 100vw, which is a few pixels wider
+     than the content when a scrollbar is present. clip removes the resulting
+     horizontal scroll without turning the body into a scroll container, which
+     `hidden` would and which breaks position: sticky. */
+  overflow-x: clip;
   background-color: var(--bg);
   color: var(--text-primary);
   font-family: var(--font-sans), var(--font-sans-fallback);

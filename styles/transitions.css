@@ -1,0 +1,72 @@
+/*
+ * Page transitions.
+ *
+ * These pseudo-elements live on the document, not inside any component, so they
+ * cannot go in a CSS module — the class names in `::view-transition-old(.x)`
+ * would be mangled and never match what <ViewTransition> emits.
+ *
+ * The gesture is the hero readout's, scaled up to a whole page: the outgoing
+ * view falls away, the incoming one rises into place from below.
+ */
+
+:root {
+  --page-exit: 200ms;
+  --page-enter: 380ms;
+  --page-travel: 560ms;
+  --page-shift: 18px;
+}
+
+/*
+ * Asymmetric on purpose. The old page leaves briskly so it stops competing for
+ * attention; the new one takes its time and is delayed until the exit is over,
+ * so the two never cross at half opacity and smear.
+ */
+::view-transition-old(.page-exit) {
+  animation:
+    var(--page-exit) cubic-bezier(0.4, 0, 0.6, 1) both page-fade-out,
+    var(--page-exit) cubic-bezier(0.4, 0, 0.6, 1) both page-fall;
+}
+
+::view-transition-new(.page-enter) {
+  animation:
+    var(--page-enter) cubic-bezier(0.4, 0, 0.6, 1) var(--page-exit) both
+      page-fade-in,
+    var(--page-travel) cubic-bezier(0.16, 1, 0.3, 1) both page-rise;
+}
+
+@keyframes page-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Down and out. */
+@keyframes page-fall {
+  to {
+    transform: translateY(var(--page-shift));
+  }
+}
+
+/* Up from below, settling — the long decelerated curve is what gives it
+   weight rather than snap. */
+@keyframes page-rise {
+  from {
+    transform: translateY(var(--page-shift));
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(.page-exit),
+  ::view-transition-new(.page-enter) {
+    animation: none;
+  }
+}

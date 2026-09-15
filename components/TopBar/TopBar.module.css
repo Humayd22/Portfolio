@@ -1,0 +1,121 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 96rem;
+  margin: 0 auto;
+  /*
+   * Sides match the main content's horizontal padding, so the bar's text lines
+   * up with the grid's left and right edges. Top is deliberately larger — the
+   * bar sits against the browser chrome otherwise, and a header needs room
+   * above it to read as placed rather than pinned.
+   */
+  padding: 2.25rem 1.25rem 1.25rem;
+  font-size: 0.875rem;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 3.5rem;
+  min-width: 0;
+}
+
+.name {
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/*
+ * Occupies the same slot as the name, so the two levels share a silhouette —
+ * and carries the same weight as the name does, full strength rather than
+ * recessive.
+ *
+ * --text-primary, not --white-1000: the primitive would be white in both
+ * themes and vanish against the light canvas. This is the token that resolves
+ * to white/1000 in dark and black/1000 in light.
+ */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.back:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.backIcon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 250ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Leans the way it is about to take you. */
+.back:hover .backIcon {
+  transform: translateX(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backIcon,
+  .back:hover .backIcon {
+    transition: none;
+    transform: none;
+  }
+}
+
+/*
+ * Stays on one line at every width. Past the last breakpoint there is no width
+ * left to buy with type size, so it truncates rather than wrapping — the name
+ * beside it is the part that must survive intact.
+ */
+.role {
+  color: var(--text-secondary);
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+ * The role is a long title held on one line, so it runs out of room well before
+ * the rest of the bar does. Stepping the type down buys width without dropping
+ * information — the bar is supporting text, and it can afford to get quieter as
+ * the viewport tightens.
+ */
+@media (max-width: 64rem) {
+  .bar {
+    font-size: 0.8125rem;
+  }
+
+  .identity {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .bar {
+    font-size: 0.75rem;
+  }
+
+  .identity {
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 34rem) {
+  .bar {
+    font-size: 0.6875rem;
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .identity {
+    gap: 0.75rem;
+  }
+}

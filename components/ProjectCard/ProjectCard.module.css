@@ -1,0 +1,299 @@
+.card {
+  position: relative;
+  /* Clips the featured card's background animation to the corner radius. */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+  padding: 1.25rem;
+  background-color: var(--surface);
+  border-radius: 1.5rem;
+  transition: background-color 250ms ease;
+}
+
+.card:hover {
+  background-color: var(--surface-hover);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 3px;
+}
+
+/*
+ * The card's own content, lifted clear of the background animation that sits
+ * behind it on the featured card. Applied to the children rather than the
+ * background so a plain card needs no stacking context of its own.
+ */
+.logo,
+.body,
+.stats,
+.arrow {
+  position: relative;
+  z-index: 1;
+}
+
+/*
+ * A still frame of the brand gradient, for cards that do not animate.
+ * The white ground is the backdrop the artwork assumes — it is transparent
+ * where its blobs do not reach.
+ */
+.still {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: #ffffff;
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/*
+ * A card whose background is pale artwork in BOTH themes, so its
+ * contents cannot keep reading from the semantic tokens — those flip to white
+ * ink in dark mode and would vanish on the artwork.
+ *
+ * These pull from the primitive ramp instead, which is mode-independent by
+ * design: the one place in the project where fixed ink is correct rather than a
+ * shortcut, because the surface it sits on is fixed too.
+ */
+.lightGround .title,
+.lightGround .statValue {
+  color: var(--black-1000);
+}
+
+.lightGround .summary,
+.lightGround .statLabel,
+.lightGround .arrow {
+  color: var(--black-600);
+}
+
+.lightGround:hover .arrow {
+  color: var(--black-1000);
+}
+
+/* --emphasis is white in dark mode and would leave no visible ring on this
+   card's light ground. */
+.lightGround:focus-visible {
+  outline-color: var(--black-1000);
+}
+
+/*
+ * The dark-ink mark in both themes, for the same reason. The light-theme swap
+ * further up already lands here on its own; this is what overrides the dark
+ * theme's default choice of the white artwork.
+ */
+.lightGround .onDark {
+  display: none;
+}
+
+.lightGround .onLight {
+  display: block;
+}
+
+.lightGround .logoFallback {
+  color: var(--black-1000);
+}
+
+/*
+ * The featured card. Same card, turned on its side: the logo well moves beside
+ * the copy instead of sitting above it, so a full-width tile does not become a
+ * very tall one with an enormous mark stranded at the top.
+ *
+ * Only above the breakpoint — at narrow widths the card is the same width as
+ * the grid tiles below it and should look like them.
+ */
+@media (min-width: 60rem) {
+  .featured {
+    flex-direction: row;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 2rem;
+  }
+
+  .featured .logo {
+    /* Fixed, and no auto margin: in a row it is a column of its own rather than
+       something centred across the card. */
+    flex: none;
+    margin: 0;
+    /* Smaller than the grid tiles' well. There the mark is the whole top half
+       of the card and carries it; here it sits beside a title and a paragraph,
+       and at the old size it outweighed both. */
+    width: clamp(8rem, 14vw, 12rem);
+  }
+
+  .featured .body {
+    /* The auto margin exists to push stats to the foot of a column. In a row
+       there is no foot to push them to. */
+    margin-bottom: 0;
+    gap: 0.875rem;
+  }
+
+  /* .featured, not .lightGround — this is the wide card's TYPE SCALE, not the
+     ink treatment that any pale-backed card needs. A grid tile with a still
+     background is still a grid tile and keeps the tile sizes. */
+  .featured .title {
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    letter-spacing: -0.02em;
+  }
+
+  .featured .summary {
+    /*
+     * Uncapped. A 60ch measure left the copy stopping well short of the card's
+     * right edge and wrapping to four lines, making the card considerably
+     * taller than it needed to be for the same words.
+     */
+    font-size: 1rem;
+  }
+}
+
+/* ---- Client logo -------------------------------------------------------- */
+
+/*
+ * A square well with no fill — the box exists to reserve identical space in
+ * every card, not to be seen.
+ *
+ * Sized from viewport HEIGHT, not the card's width. Squaring against the card
+ * width made this 650px tall on a wide screen and pushed the whole card past
+ * the fold; tying it to vh means the card grows on a tall display and shrinks
+ * on a short one, so it stays just-visible either way.
+ */
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* The square itself is centred in the card, and the mark centred within it —
+     so the logo reads as sitting on the card's vertical axis rather than being
+     pinned to one corner. */
+  margin: 0 auto;
+  width: clamp(9rem, 27vh, 19rem);
+  aspect-ratio: 1;
+}
+
+.logoImg {
+  max-width: 100%;
+  /* Held under the square's height so a tall mark cannot fill it edge to edge
+     and lose the breathing room the box is there to provide. */
+  max-height: 62%;
+  width: auto;
+  object-fit: contain;
+}
+
+/*
+ * Theme swap. Dark is the :root default, so the light-theme mark starts hidden
+ * and the pair trade places under [data-theme="light"]. Driven by the same
+ * attribute the pre-paint script sets, so the correct mark is present on the
+ * very first frame — no flash, no JS.
+ */
+.onLight {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onDark {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onLight {
+  display: block;
+}
+
+/* Stands in until a mark exists — the client's name reads as deliberate rather
+   than as a missing asset. */
+.logoFallback {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+/* ---- Copy --------------------------------------------------------------- */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  /* Pushes the stats to the foot of the card, so they line up across the row
+     however long the summaries run. */
+  margin-bottom: auto;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+/*
+ * Fixed to the card's bottom-right corner, matching the bento cards. Every
+ * card's arrow lands in the same place regardless of how its title wraps, which
+ * is what makes a row of them read as one set rather than as separate
+ * compositions.
+ */
+.arrow {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--text-secondary);
+  transition:
+    transform 250ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    color 250ms ease;
+}
+
+.card:hover .arrow {
+  transform: translate(2px, -2px);
+  color: var(--text-primary);
+}
+
+.summary {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* ---- Stats -------------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  /* Separated by space alone — the numbers are already big enough to read as a
+     distinct block without a rule to announce them. */
+  padding-top: 0.5rem;
+}
+
+.stat {
+  display: flex;
+  /* Value first visually, label under it — reversed in the DOM because a
+     description list must give the term before its definition. */
+  flex-direction: column-reverse;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.statLabel {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.statValue {
+  margin: 0;
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow,
+  .card:hover .arrow {
+    transition: none;
+    transform: none;
+  }
+}

@@ -1,0 +1,64 @@
+/*
+ * Portrait left, copy right. The empty space that used to sit under the title
+ * now holds the photo, so the page reads as two columns rather than one column
+ * pushed to one side.
+ */
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+/*
+ * Same card language as the bento grid — surface, radius, clipped. position:
+ * relative because the Portrait fills its container absolutely.
+ *
+ * No aspect-ratio and no align-self, so it takes the grid's default stretch and
+ * ends up exactly as tall as the copy beside it. The photo is object-fit: cover,
+ * so it crops to whatever shape that leaves rather than dictating one.
+ */
+.portrait {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--surface);
+  border-radius: 1.25rem;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+.paragraph {
+  /*
+   * No max-width: the block runs the full width of its column so the rag ends
+   * flush with the page's right margin. That flush edge is the point of the
+   * layout — a reading measure here would leave a ragged gutter and the
+   * alignment would read as accidental.
+   */
+  font-size: clamp(1.0625rem, 1.35vw, 1.3125rem);
+  line-height: 1.65;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+  /* Evens the rag without the orphaned last words `balance` would leave on a
+     block this long. */
+  text-wrap: pretty;
+}
+
+/*
+ * Below this the two columns are too narrow to carry a photo beside prose, so
+ * they stack — portrait first, then the copy at full measure.
+ */
+@media (max-width: 60rem) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .portrait {
+    /* Stacked, there is no sibling to match, so it needs a shape of its own.
+       Full width, so its edges line up with the copy beneath — and wide rather
+       than tall, or a full-width portrait would push that copy off screen. */
+    aspect-ratio: 16 / 10;
+  }
+}

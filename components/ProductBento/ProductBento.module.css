@@ -1,0 +1,116 @@
+/*
+ * A container, which is what lets everything inside be sized in cqi — 1% of
+ * this element's own width — the same technique the customer-feedback board
+ * uses. The grid then scales as a single composed unit at any width instead
+ * of reflowing: nothing inside ever moves relative to anything else, it all
+ * just gets smaller together.
+ */
+.stage {
+  container-type: inline-size;
+}
+
+/*
+ * A 5-column, 6-row grid. 6 is the LCM of the 2-tile and 3-tile columns, which
+ * is what lets every column split into whole-number row spans with no
+ * fractional heights anywhere — see lib/product-bento.ts for the placement.
+ *
+ * cqi values throughout this file resolve against .stage above, not against
+ * this element — a length cannot query the containment it establishes itself,
+ * which is why the two are separate elements.
+ */
+.grid {
+  display: grid;
+  /* Centre column is auto, not a guessed fr: it holds the screenshot at its
+     own intrinsic width (see .hug below), so the track has to match that
+     width exactly or the leftover space reads as an oversized gap. */
+  grid-template-columns: 1fr 0.95fr auto 0.95fr 1fr;
+  grid-template-rows: repeat(6, minmax(0, 1fr));
+  gap: 1.07cqi;
+  width: 100%;
+  /*
+   * The composition's own proportions, measured off the rendered layout
+   * (1495 x 607px at its natural size) rather than an arbitrary ratio like
+   * 16:9. aspect-ratio is what replaces a fixed height with one that scales:
+   * the centre tile spans all 6 rows and renders the screenshot at its own
+   * height, so the grid's height has to keep tracking that as it shrinks, not
+   * stay pinned to one absolute number.
+   */
+  aspect-ratio: 1495 / 607;
+}
+
+.tile {
+  position: relative;
+  margin: 0;
+  display: flex;
+  border-radius: 1.338cqi;
+  overflow: hidden;
+  /* Shows while a tile's image loads, and stands in for any tile whose file
+     has not been designed and saved yet — see lib/product-bento.ts. */
+  background-color: var(--surface);
+}
+
+.photo {
+  object-fit: cover;
+}
+
+/*
+ * The screenshot tile: no crop, no background of its own. The PNG already has
+ * its rounded corners cut into transparency and its own white UI body baked
+ * in, so it just sits at full height and the page's own ground shows around
+ * it — the same as the phone screenshots on the Takaful tab.
+ */
+.hug {
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+}
+
+.screenshot {
+  height: 100%;
+  width: auto;
+}
+
+/*
+ * The six small value-prop tiles, sitting on the site's own glass surface —
+ * the same --surface-glass fill and backdrop blur the home page's bento uses,
+ * so a card blurs whatever sits behind it rather than a flat colour baked into
+ * a file. --glass-blur is not a shared token: BentoGrid.module.css scopes its
+ * own copy to .card there, so this one is redeclared here at the same 14px,
+ * just expressed in cqi so it shrinks with the rest of the tile on mobile
+ * instead of staying a fixed size while everything around it scales down.
+ */
+.glass {
+  padding: 1.605cqi;
+  background-color: var(--surface-glass);
+  -webkit-backdrop-filter: blur(0.936cqi);
+  backdrop-filter: blur(0.936cqi);
+}
+
+/*
+ * contain, not cover: this is transparent icon+label artwork meant to sit
+ * inside the glass with room to breathe, not a photo meant to fill the tile
+ * edge to edge — cropping it would cut into the icon or the label text.
+ */
+.glassArt {
+  object-fit: contain;
+}
+
+/*
+ * Theme swap for a glass tile's optional second ink variant. Dark is the
+ * :root default, so the light-theme artwork starts hidden and the pair trade
+ * places under the attribute the pre-paint script sets — the same mechanism
+ * the ADIB logo and every client logo already use, redeclared here because
+ * CSS Modules hash class names per file, so those rules cannot be reused
+ * across files even though the effect is identical.
+ */
+.onLight {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onDark {
+  display: none;
+}
+
+:global(html[data-theme="light"]) .onLight {
+  display: block;
+}

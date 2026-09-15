@@ -1,0 +1,66 @@
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Same measure and padding as the home page, so the bar and the content sit in
+   exactly the same place when moving between levels. */
+.main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 96rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 1.25rem;
+}
+
+/*
+ * A sentence, not a label. Left-aligned and wrapping, which is why it shares
+ * nothing with the home page's hero type beyond weight and tracking — that one
+ * is fit-content, centred and nowrap because the intro flies a single word onto
+ * it, and none of those constraints apply here.
+ */
+.headline {
+  flex: none;
+  margin-top: 3.5rem;
+  /*
+   * Measure in em, so the line length holds as the type scales. A rem or px
+   * value would give a comfortable 2 lines on a laptop and a cramped 4 on a
+   * phone.
+   */
+  max-width: 24em;
+  font-size: clamp(1.75rem, 3.4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  color: var(--text-primary);
+}
+
+/*
+ * Whatever the page puts below the headline. Unlike home — which locks the grid
+ * into the remaining viewport height — this scrolls, because level-two pages
+ * carry real content of unknown length.
+ */
+/*
+ * Sections are separated by one gap, owned here rather than by each page. A
+ * page setting its own top margin on top of this would compound the two and
+ * every page would space differently — which is exactly what happened before.
+ */
+.content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  margin-top: var(--headline-gap);
+  padding-bottom: var(--section-gap);
+}
+
+@media (max-width: 40rem) {
+  .headline {
+    margin-top: 2.5rem;
+  }
+}

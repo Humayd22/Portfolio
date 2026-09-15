@@ -41,12 +41,11 @@ export const NO_FLASH_SCRIPT = `
   try {
     var themes = ${JSON.stringify(THEMES)};
     var stored = localStorage.getItem("${THEME_STORAGE_KEY}");
-    var theme =
-      themes.indexOf(stored) !== -1
-        ? stored
-        : window.matchMedia("(prefers-color-scheme: light)").matches
-          ? "light"
-          : "${DEFAULT_THEME}";
+    // Deliberately does NOT consult prefers-color-scheme. The dark treatment
+    // is the designed first impression — the name glow and the intro sequence
+    // are built for it — so every first-time visitor gets it regardless of OS
+    // setting. Their own choice, once made, still wins on every later visit.
+    var theme = themes.indexOf(stored) !== -1 ? stored : "${DEFAULT_THEME}";
     document.documentElement.setAttribute("${THEME_ATTRIBUTE}", theme);
   } catch (e) {
     document.documentElement.setAttribute("${THEME_ATTRIBUTE}", "${DEFAULT_THEME}");
