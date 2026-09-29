@@ -19,6 +19,23 @@
 }
 
 /*
+ * Gone on phones, at the same width the cards stop animating.
+ *
+ * The control exists to choose between the frames of an animation and the
+ * animation itself. Below this the animation never runs, so most of what it
+ * offers is a choice between a still and a still that cannot play — an offer
+ * the page would be making and then not honouring.
+ *
+ * display:none rather than hidden on the button, so it leaves the tab order
+ * and the accessibility tree too rather than staying as an invisible target.
+ */
+@media (max-width: 48rem) {
+  .bar {
+    display: none;
+  }
+}
+
+/*
  * Text and an icon, matching the Back control rather than the filled pills on
  * the resume. Nothing here is a call to action — it is an offer, and a filled
  * button would have claimed more of the page than the feature deserves.
