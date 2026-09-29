@@ -117,28 +117,33 @@ export function ProjectCard({
           the same place regardless of how its title wraps. */}
       <ArrowIcon />
 
-      <div className={styles.body}>
-        <h2 className={styles.title}>{title}</h2>
-        <p className={styles.summary}>{summary}</p>
-      </div>
+      {/* Copy and figures in one column. The featured card lays its children
+          out in a row, and without this the stats become a third column beside
+          the summary rather than sitting under it. */}
+      <div className={styles.column}>
+        <div className={styles.body}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.summary}>{summary}</p>
+        </div>
 
-      {/*
-       * A description list: each stat is genuinely a term and its value, and
-       * the pairing survives when the two columns collapse on narrow screens.
-       *
-       * Skipped entirely where a project has no figures yet — an empty list
-       * still occupies the foot of the card and knocks the row out of step.
-       */}
-      {stats?.length ? (
-        <dl className={styles.stats}>
-          {stats.map((stat) => (
-            <div key={stat.label} className={styles.stat}>
-              <dt className={styles.statLabel}>{stat.label}</dt>
-              <dd className={styles.statValue}>{stat.value}</dd>
-            </div>
-          ))}
-        </dl>
-      ) : null}
+        {/*
+         * A description list: each stat is genuinely a term and its value, and
+         * the pairing survives when the two columns collapse on narrow screens.
+         *
+         * Skipped entirely where a project has no figures yet — an empty list
+         * still occupies the foot of the card and knocks the row out of step.
+         */}
+        {stats?.length ? (
+          <dl className={styles.stats}>
+            {stats.map((stat) => (
+              <div key={stat.label} className={styles.stat}>
+                <dt className={styles.statLabel}>{stat.label}</dt>
+                <dd className={styles.statValue}>{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+      </div>
 
       {controls}
     </>

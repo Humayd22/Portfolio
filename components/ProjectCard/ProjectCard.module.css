@@ -27,11 +27,22 @@
  * background so a plain card needs no stacking context of its own.
  */
 .logo,
-.body,
-.stats,
+.column,
 .arrow {
   position: relative;
   z-index: 1;
+}
+
+/*
+ * Copy and figures, stacked. It takes the gap the card used to apply between
+ * them directly, so the spacing is unchanged, and it fills the remaining
+ * height so `.body`'s auto bottom margin still has a foot to push the stats to.
+ */
+.column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 /*
