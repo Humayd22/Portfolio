@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Pre-edit backups of source renders. Kept locally as a safety copy, but they
+# are unreferenced and ~17MB, and git history never forgets a blob.
+public/images/**/*-original.*

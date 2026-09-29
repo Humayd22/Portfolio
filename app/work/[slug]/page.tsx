@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   return (
     /* Back returns to the list rather than home — that is where the reader came
        from, and home is one more step from there. */
-    <PageShell headline={found.project.title} backHref="/work">
+    <PageShell headline={found.study.headline ?? found.project.title} backHref="/work">
       <CaseStudy project={found.project} study={found.study} />
     </PageShell>
   );

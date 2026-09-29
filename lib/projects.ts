@@ -80,7 +80,7 @@ export const PROJECTS: Project[] = [
     },
     title: "Salesforce migration and adoption at ABSA",
     summary:
-      "I enhanced products across both physical and voice channels, focusing on new-to-bank and new-to-product journeys for transactional products (CASA), personal loans, and credit cards.",
+      "I solutioned new-to-bank and new-to-product journeys across physical, voice and omnichannel touchpoints for transactional accounts (CASA), personal loans and credit cards, migrating an outdated in-branch system to Salesforce to streamline operations and future-proof the platform for long-term growth.",
     stats: [{ label: "Features/products launched & enhanced", value: "20+" }],
   },
   {
@@ -94,7 +94,7 @@ export const PROJECTS: Project[] = [
     title: "Clientele Insurance design system",
     summary:
       "I developed a comprehensive design system that established a strong foundation for the design team. This system was crafted with a focus on scalability, productivity, and consistency, enabling the team to work more efficiently and cohesively. It improved both design and code quality, minimized siloed knowledge which enabled collaboration between designers and product teams.",
-    stats: [{ label: "Reduction in Design and Development time", value: "65%" }],
+    stats: [{ label: "Reduction in Design and Development time", value: "80%" }],
   },
   {
     slug: "nedbank",

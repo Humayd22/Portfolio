@@ -58,12 +58,22 @@
    * Sized to the viewport, and padded so a click just outside the image still
    * lands on the backdrop and closes it — a dialog fitted tightly to the image
    * leaves nowhere to click out.
+   *
+   * grid, because the image needs centring on both axes and `margin: auto`
+   * only does the horizontal one on a block. Without this the image sits
+   * against the top edge with all the slack below it, which reads as the
+   * lightbox having failed to open properly rather than as a composition.
    */
+  display: grid;
+  place-items: center;
   max-width: 100vw;
   max-height: 100vh;
   width: 100vw;
   height: 100vh;
-  padding: clamp(1.5rem, 5vw, 4rem);
+  /* Tighter than before: the padding only has to leave somewhere to click
+     out, and at 4rem it was holding a large screenshot well off the size it
+     could have been read at. */
+  padding: clamp(1rem, 3vw, 2.5rem);
   background: transparent;
   border: none;
   overflow: hidden;
@@ -90,7 +100,6 @@
   height: auto;
   max-width: 100%;
   max-height: 100%;
-  margin: auto;
   object-fit: contain;
   border-radius: 0.75rem;
 }
@@ -104,16 +113,23 @@
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
-  background-color: var(--surface);
+  /*
+   * A fixed dark fill rather than a theme surface. --surface is an alpha token
+   * — 10% white on the dark theme — which was invisible the moment the image
+   * grew large enough to sit underneath this button. The scrim behind the
+   * lightbox is dark in both themes for the same reason, so this matches it
+   * and stays legible over whatever the image happens to be.
+   */
+  background-color: rgba(0, 0, 0, 0.6);
   border: none;
   border-radius: 50%;
-  color: var(--text-primary);
+  color: #ffffff;
   cursor: pointer;
   transition: background-color 200ms ease;
 }
 
 .close:hover {
-  background-color: var(--surface-hover);
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .close:focus-visible {

@@ -43,4 +43,15 @@
   /* Canvases — the solid ground every alpha value composites over */
   --canvas-dark: #0a0a0a;
   --canvas-light: #ffffff;
+
+  /*
+   * white-100 over canvas-dark, pre-composited: rgba(255,255,255,0.1) sitting
+   * on #0a0a0a resolves to this exact opaque grey. Needed once, for a case
+   * that cannot use --surface itself: a thumbnail of artwork authored against
+   * a dark canvas, whose transparent margins only read correctly there. An
+   * alpha value can't be pinned — it always recomposites against whatever
+   * theme it lands on — so this exists as the one place that opaque result is
+   * frozen and reused regardless of the active theme.
+   */
+  --surface-dark-fixed: #232323;
 }

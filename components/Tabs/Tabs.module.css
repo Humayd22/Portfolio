@@ -70,6 +70,19 @@
   outline-offset: 3px;
 }
 
+/*
+ * The panel is the flex container for whatever it holds, so a panel of several
+ * sections spaces them the way the page does. Without this the sections are
+ * plain block children of a plain div and run straight into each other, since
+ * their own gap belongs to the column they used to sit in.
+ */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+/* Beats the rule above, which would otherwise keep a hidden panel laid out. */
 .panel[hidden] {
   display: none;
 }
@@ -85,4 +98,44 @@
     padding: 0.5rem 0.875rem;
     font-size: 0.875rem;
   }
+}
+
+/* ---- Raised variant -------------------------------------------------------
+ * A second level, inside a panel of the first. It is the same control as the
+ * page-level switch — same padding, same fill, same inverted label — with the
+ * tray taken away, so the pill sits on bare ground. That one difference is
+ * what separates the two levels, which is why nothing below restates a size,
+ * a colour or a breakpoint: every one of those is inherited, and the variant
+ * is only the subtraction.
+ */
+
+.raised {
+  gap: 2.5rem;
+}
+
+.raised .tabs {
+  align-self: flex-start;
+  /* Bounded and scrollable. Without the cap the strip is sized to its five
+     labels and pushes the whole page wider than the viewport on a phone
+     instead of scrolling within itself. */
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 0.5rem;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+.raised .tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* No tray to sit inside, so the insets the base rule takes for one come back
+   off: the pill fills its tab exactly. */
+.raised .indicator {
+  top: 0;
+  left: 0;
+  height: 100%;
+  transform: translateX(var(--tab-x, 0));
 }

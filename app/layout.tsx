@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk } from "next/font/google";
+import Script from "next/script";
 import { INTRO_SCRIPT } from "@/lib/intro";
 import { DEFAULT_THEME, NO_FLASH_SCRIPT } from "@/lib/theme";
 import "./globals.css";
@@ -57,8 +58,25 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
-        <script dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }} />
+        {/*
+         * next/script, not a raw <script> tag: a plain script element
+         * rendered by React is only safe on a true SSR hydration, and the
+         * notFound()/404 status-code path forces a client-only re-render of
+         * the whole tree — a raw script tag there is created via the DOM,
+         * never executes, and trips React's dev warning for exactly that.
+         * beforeInteractive is what "must run before hydration" actually
+         * means in next/script's own terms.
+         */}
+        <Script
+          id="no-flash-script"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }}
+        />
+        <Script
+          id="intro-script"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }}
+        />
       </head>
       <body>{children}</body>
     </html>

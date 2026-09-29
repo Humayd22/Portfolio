@@ -4,11 +4,21 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import styles from "./Tabs.module.css";
 
 export type TabItem = {
-  /** Stable, and used for the tab and panel DOM ids. */
+  /** Stable, and used for the tab and panel DOM ids, so it has to be unique
+      across the whole page: a nested set prefixes its own. */
   id: string;
   label: string;
   panel: React.ReactNode;
 };
+
+/**
+ * `segmented` is the page-level switch: a filled pill that travels behind the
+ * labels. `raised` is for a second level inside one of those panels, and is
+ * modelled on the design system's own Horizontal Tab: the same travelling
+ * shape, but a lifted surface rather than an emphasis fill, and no tray behind
+ * the strip. That is what keeps the two levels apart at a glance.
+ */
+export type TabsVariant = "segmented" | "raised";
 
 /**
  * A segmented switch over any number of panels.
@@ -21,7 +31,15 @@ export type TabItem = {
  * told this is a set, which one is selected, and the arrow keys move between
  * them, which is what the role promises.
  */
-export function Tabs({ label, tabs }: { label: string; tabs: TabItem[] }) {
+export function Tabs({
+  label,
+  tabs,
+  variant = "segmented",
+}: {
+  label: string;
+  tabs: TabItem[];
+  variant?: TabsVariant;
+}) {
   /* Derived from the array, so reordering moves the default with it rather than
      leaving a hardcoded id pointing at whichever is now second. */
   const [active, setActive] = useState(tabs[0]?.id);
@@ -72,7 +90,7 @@ export function Tabs({ label, tabs }: { label: string; tabs: TabItem[] }) {
   }
 
   return (
-    <div className={styles.tabbed}>
+    <div className={`${styles.tabbed} ${styles[variant]}`}>
       <div
         className={styles.tabs}
         role="tablist"

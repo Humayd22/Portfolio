@@ -49,6 +49,26 @@
   align-items: center;
 }
 
+/*
+ * No mark to sit beside, so no column reserved for one. The two-track rule
+ * above keeps its second track even with nothing in it, which left every
+ * hero-less strand writing its prose into a third of the page while 40rem sat
+ * empty to the right.
+ */
+.leadWide {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/*
+ * A mark sizes its own column rather than being handed 40rem to sit in the
+ * middle of. The wide track is for product renders; giving it to a 156px app
+ * icon narrowed the prose beside it and wrapped the figures onto two rows for
+ * no gain.
+ */
+.leadMark {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .leadBody {
   display: flex;
   flex-direction: column;
@@ -96,6 +116,8 @@
      prose, so centering them against each other let facts drift down the
      page as narrative grew. Facts pins to the top of the row instead. */
   align-items: start;
+  /* A div, so it misses the scroll-margin .section carries. */
+  scroll-margin-top: 4rem;
 }
 
 .overviewWide {
@@ -159,6 +181,9 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  /* Jumped-to sections stop clear of the top edge rather than flush against
+     it, which reads as having overshot. */
+  scroll-margin-top: 4rem;
 }
 
 .heading {
@@ -237,6 +262,1036 @@
   font-size: 0.875rem;
   line-height: 1.4;
   color: var(--text-secondary);
+}
+
+/*
+ * The composition of a headline figure, not a figure itself — so it runs as
+ * one wrapping line at body scale rather than joining the Stats grid, where
+ * it would read as five more equally-weighted numbers.
+ */
+.breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.breakdownMark {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  /* Pulls back against the row's own column gap so the mark sits against
+     the first figure rather than reading as another item in the list. */
+  margin-right: -0.875rem;
+}
+
+.breakdownPart {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.breakdownValue {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.breakdownLabel {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* ---- Typography ----------------------------------------------------------
+ * Same shape as Stats above — a row of compact facts backing up the prose
+ * that precedes it. Unlike Stats, reading order and visual order agree here
+ * (platform, then the typeface it names, then its scale), so there is no
+ * column-reverse trick to keep in sync with the DOM.
+ */
+
+.typography {
+  display: grid;
+  /* Wider floor than Stats' 9rem: a column now also holds the six-step ramp,
+     and Web's H1 sample alone runs to 3.25rem. */
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 2.5rem 2rem;
+  /* On top of .section's 1rem: the typeface names sit heavier than Stats'
+     plain figures, so the row needs more air off the prose than that gap
+     alone gives it. */
+  margin-top: 1.75rem;
+}
+
+.typeface {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.typefaceRamp {
+  display: flex;
+  flex-wrap: wrap;
+  /* The steps share a bottom edge, the way a real type ramp does — centring
+     each independently would lose that read entirely. */
+  align-items: flex-end;
+  gap: 0.875rem 1rem;
+}
+
+.typefaceStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.typefaceGlyph {
+  display: block;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.typefaceStepLabel {
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.typefaceName {
+  margin: 0;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.typefacePlatform {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.typefaceIcon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* ---- Foundations ----------------------------------------------------------
+ * The primitive ramps and scales, drawn at their real values. Shown as
+ * evidence rather than argued in prose, so this section is deliberately
+ * light on words and heavy on swatches.
+ */
+
+/*
+ * Foundations runs long enough that its evidence needs dividing: Colors,
+ * Typography, then the unit map. Each gets a rule and a heading, so a reader
+ * scanning for the type ramp can find it without reading the colour ramps
+ * first.
+ */
+.subsection {
+  display: flex;
+  flex-direction: column;
+  /* No rule between them: the headings already mark the boundaries, so the
+     separation is space alone. It has to be generous for that reason, and
+     wider than .section's own 1rem, or the divisions stop reading. */
+  margin-top: 4.5rem;
+}
+
+/* The first one follows the section's intro paragraph, which already separates
+   it from the heading above. */
+.subsection:first-of-type {
+  margin-top: 2rem;
+}
+
+.subheading {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.subnote {
+  max-width: 46rem;
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.palettes {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.75rem;
+}
+
+.palette {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.paletteName {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+/*
+ * nowrap: a nine-step ramp reads as a ramp only while it stays one row, so
+ * the steps shrink together on a narrow screen rather than wrapping into a
+ * second line that breaks the gradient.
+ */
+.ramp {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.375rem;
+}
+
+.rampStep {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.rampChip {
+  display: block;
+  width: 100%;
+  height: 3rem;
+  border-radius: 0.5rem;
+  /* Several steps sit near-white; without the hairline they read as a gap. */
+  border: 1px solid var(--border);
+}
+
+.rampLabel {
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * A column per tier rather than one long stack: at twenty styles a single
+ * column runs past a screen, and the tiers are peers, not a sequence to be
+ * read in order. Side by side they also share one row, so the four headers
+ * line up and no column leaves a hole under a short neighbour.
+ */
+.typeRamp {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  align-items: start;
+  gap: 2.5rem 2rem;
+  margin-top: 2.5rem;
+}
+
+.typeTier {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.typeTierHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.typeTierName {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.typeTierFace {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/*
+ * Metrics first, specimen second. Spread across the column the other way
+ * round, the figures end up stranded at the far edge and the specimens sit on
+ * a ragged left edge — and a ramp is only legible as a ramp while its steps
+ * share one.
+ */
+.typeRow {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 1rem;
+}
+
+/*
+ * Set in the site's own face: Greycliff CF and Noto Sans are the product's
+ * licensed fonts, not this site's, so the specimen shows the ramp's
+ * proportions while .typeTierFace names the typeface that actually ships.
+ */
+.typeSpecimen {
+  min-width: 0;
+  color: var(--text-primary);
+  /* The ramp's own line heights would leave the tall steps colliding with
+     their neighbours; the row spacing is the grid's job, not the type's. */
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.typeMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+}
+
+.typeName {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.typeNumbers {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Fixed layout so the three token columns share the leftover width evenly.
+   With auto layout the browser handed almost all of it to Spacing, the first
+   column with long content, and the mapping stopped reading as a mapping. */
+.unitTable {
+  width: 100%;
+  margin-top: 2rem;
+  border-collapse: collapse;
+  table-layout: fixed;
+  text-align: left;
+}
+
+.unitTable th,
+.unitTable td {
+  padding: 0.5rem 1rem 0.5rem 0;
+  vertical-align: baseline;
+}
+
+.unitTable thead th {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.unitTable tbody tr + tr th,
+.unitTable tbody tr + tr td {
+  border-top: 1px solid var(--border);
+}
+
+/* The spine: the rung's own name, the column every other reads against. */
+.unitCell {
+  width: 5rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.unitBarCell {
+  width: 7.5rem;
+}
+
+.unitBarWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.unitValue {
+  flex: none;
+  width: 1.5rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Drawn at its real value, the same language the spacing scale above uses,
+   so the two read as the same ramp seen twice. */
+.unitBar {
+  display: block;
+  flex: none;
+  height: 0.5rem;
+  border-radius: 0.125rem;
+  background-color: var(--text-primary);
+}
+
+.unitTokens {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.unitToken + .unitToken::before {
+  content: ", ";
+  color: var(--text-muted);
+}
+
+.unitEmpty {
+  color: var(--border);
+}
+
+.unitExceptions {
+  margin-top: 2.5rem;
+}
+
+.unitExceptionsNote {
+  max-width: 46rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* Shared by the unit map's off-ramp tokens and by the audit findings: both
+   are a short list of specific exceptions, each with the figure that pins it
+   down. */
+.findingList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.finding {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.findingLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.findingValue {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.findingBody {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* Below this the five columns cannot hold their content. The bar goes, since
+   it is decoration, but its value does not — the numbers are the ramp. */
+@media (max-width: 48rem) {
+  .unitBar {
+    display: none;
+  }
+
+  .unitCell {
+    width: 3.5rem;
+  }
+
+  .unitBarCell {
+    width: 2.75rem;
+  }
+
+  .unitTable th,
+  .unitTable td {
+    padding-right: 0.75rem;
+  }
+
+  .unitTokens {
+    font-size: 0.75rem;
+  }
+}
+
+/*
+ * Prose and one screenshot side by side. The prose keeps its own measure via
+ * .body, so this only decides how the row is divided; below the breakpoint it
+ * stacks, because a single image loses nothing by sitting under the text it
+ * illustrates.
+ */
+.withAside {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 34rem);
+  gap: 3rem;
+  align-items: start;
+}
+
+/*
+ * Artwork composes centred; a screenshot aligns to the heading. It also gets a
+ * wider column: a render carries its own transparent margin, so at the
+ * screenshot's 34rem the subject inside it ends up far smaller than a
+ * screenshot occupying the same box.
+ */
+.withAsideArt {
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--aside-w, 44rem));
+  align-items: center;
+}
+
+/* No frame and no crop: the render is a composition on transparency, and a
+   border would draw a box around empty pixels. */
+.asideArt {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* A mark smaller than its column sits centred in it rather than pinned to
+     the left edge with the slack to its right. */
+  justify-self: center;
+}
+
+/*
+ * Aside on the left. Done with `order` rather than explicit column placement so
+ * the DOM keeps the prose first — which is what the stacked layout below then
+ * falls back to, without needing to be told.
+ */
+.withAsideLeft {
+  grid-template-columns: minmax(0, var(--aside-w, 44rem)) minmax(0, 1fr);
+}
+
+.withAsideLeft .asideProse {
+  order: 2;
+}
+
+.asideProse {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+@media (max-width: 64rem) {
+  .withAside {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  /* Stacked, the prose leads whichever side the aside took on a wide screen. */
+  .withAsideLeft .asideProse {
+    order: 0;
+  }
+}
+
+/*
+ * App screens under the prose. Capped rather than given an equal share of the
+ * row: a portrait capture stretched to a third of a 1460px page reads as a
+ * poster, not a phone. Wraps rather than shrinking, because below a certain
+ * width a phone screen stops being readable at all.
+ */
+.screenRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+/*
+ * The cap belongs on the flex child, which is the expand button rather than
+ * the image inside it. Capping only the image leaves each button taking the
+ * full row width, and the screens stack instead of sitting side by side.
+ */
+.screenRow > * {
+  flex: 0 0 auto;
+  width: min(100%, 15rem);
+}
+
+.screenShot {
+  display: block;
+  width: 100%;
+  border-radius: 1.25rem;
+  /* The captures carry their own light UI, so on the dark theme the rounded
+     corner needs an edge or it reads as a cut-off rectangle. */
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 48rem) {
+  .screenRow {
+    gap: 1rem;
+  }
+
+  .screenRow > * {
+    width: min(100%, 9rem);
+  }
+}
+
+/* ---- Screenshot row -------------------------------------------------------
+ * Four views of one artefact, side by side so they can be compared. The row
+ * stays a row at every width — nowrap plus an equal flex basis means they
+ * shrink together rather than reflowing, which is the only way the comparison
+ * survives a phone. Each one opens full size on click, which is where the
+ * detail actually gets read.
+ */
+
+.shots {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.shots > * {
+  /* Equal share of whatever width there is, and min-width: 0 so a wide image
+     cannot refuse to shrink and push the row past the page. */
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.shot {
+  display: block;
+  width: 100%;
+  /* The captures' own ratio, so nothing is cropped in the thumbnail either. */
+  aspect-ratio: 8 / 5;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  /* The screenshots are of a light UI: on the dark theme an unbordered image
+     would float as a bright rectangle with no edge. */
+  background-color: var(--surface);
+}
+
+@media (max-width: 48rem) {
+  .shots {
+    gap: 0.5rem;
+  }
+
+  .shot {
+    border-radius: 0.375rem;
+  }
+}
+
+/* ---- Comparison table -----------------------------------------------------
+ * The contract against the implementations. Monochrome, so agreement and
+ * disagreement cannot be carried by hue: a matching cell recedes to the muted
+ * ink and a differing one comes forward to full ink with a mark beside it. The
+ * eye lands on the differences, which is the whole point of the grid.
+ */
+
+/* Not visually-hidden text as a utility anywhere else in this file, so it is
+   defined here beside its only use. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.compare {
+  width: 100%;
+  margin-top: 2rem;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.compare th,
+.compare td {
+  padding: 0.6875rem 1.25rem 0.6875rem 0;
+  vertical-align: baseline;
+}
+
+.compare thead th {
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+
+.compare tbody tr + tr th,
+.compare tbody tr + tr td {
+  border-top: 1px solid var(--border);
+}
+
+.compareColName {
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.compareColMeta {
+  display: block;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.compareLabel {
+  width: 32%;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+/* The reference column. Set quieter than the cells measured against it: it is
+   the baseline, so it should not compete with what differs from it. */
+.compareExpected {
+  width: 17%;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.compareCell {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.compareCell[data-ok="true"] {
+  color: var(--text-muted);
+}
+
+.compareMark {
+  display: inline-block;
+  width: 1.125rem;
+  color: var(--text-muted);
+}
+
+.compareCell[data-ok="false"] .compareMark {
+  color: var(--text-primary);
+}
+
+@media (max-width: 48rem) {
+  .compare th,
+  .compare td {
+    padding-right: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .compareLabel {
+    width: 34%;
+  }
+
+  .compareColMeta {
+    display: none;
+  }
+}
+
+/* ---- Token pipeline -------------------------------------------------------
+ * Source, handoff, consumers, with the crossings between them drawn as their
+ * own items. The asymmetry is the argument: one crossing is generated, the
+ * rest are hand-made, so the two link styles have to read as different things
+ * rather than as decoration.
+ */
+
+.pipeline {
+  display: grid;
+  /* Stages take the room; links take only what their label needs. */
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  /* start, not stretch: the fan-out column is three cards tall, and stretching
+     would blow the two single cards up to match it, leaving most of each one
+     empty. */
+  align-items: start;
+  gap: 0;
+  margin-top: 2.5rem;
+  list-style: none;
+}
+
+.pipeStage {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.pipeNode {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background-color: var(--surface);
+}
+
+.pipeHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  /* The badge sits on the meta's cap line rather than its baseline, so a meta
+     that wraps to two lines keeps the badge at the top of the card. */
+  margin-bottom: 0.125rem;
+}
+
+.pipeMeta {
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pipeName {
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* A badge, not another line of prose: it answers "how is this one fed?" at a
+   glance, and the two kinds have to be told apart without reading them. */
+.pipeVia {
+  flex: none;
+  /* Nudged up against the uppercase meta, whose cap height leaves it sitting
+     low in its own line box. */
+  margin-top: -0.1875rem;
+  padding: 0.1875rem 0.5rem;
+  border-radius: 0.3125rem;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  color: var(--text-secondary);
+  background-color: var(--surface-hover);
+}
+
+.pipeVia[data-kind="generated"] {
+  color: var(--text-primary);
+  /* An outline rather than another fill: the generated path is the one with a
+     build behind it, and it should read as the firmer of the two. */
+  box-shadow: inset 0 0 0 1px var(--border-strong, var(--border));
+}
+
+.pipeDetail {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* The crossing itself. The rule runs the full height so the row reads as one
+   continuous flow rather than three boxes that happen to be adjacent. */
+.pipeLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.25rem;
+  /* Level with the card titles. The cards are different heights, so there is
+     no vertical centre the crossing could sit on that means anything. */
+  margin-top: 3.25rem;
+}
+
+.pipeLink::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid var(--border);
+}
+
+/* Dashed for the crossing a person makes, solid for the one a machine does.
+   A reader who misses the labels still sees that the two are not alike. */
+.pipeLink[data-kind="manual"]::before {
+  border-top-style: dashed;
+}
+
+.pipeLinkLabel {
+  position: relative;
+  max-width: 7rem;
+  padding: 0.375rem 0;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--text-muted);
+  background-color: var(--canvas);
+}
+
+.pipeFanOut {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/*
+ * Stacked, the horizontal rules would be meaningless, so the links become
+ * vertical: the flow still reads top to bottom and the labels stay attached
+ * to the crossing they describe.
+ */
+@media (max-width: 64rem) {
+  .pipeline {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pipeLink {
+    margin-top: 0;
+    padding: 1rem 0;
+  }
+
+  .pipeLink::before {
+    left: 50%;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+
+  .pipeLink[data-kind="manual"]::before {
+    border-top-style: none;
+    border-left-style: dashed;
+  }
+
+  .pipeLinkLabel {
+    max-width: none;
+    padding: 0.25rem 0.75rem;
+  }
+}
+
+/* ---- Color system ---------------------------------------------------------
+ * Same shape again: prose stating the mechanism, then the compact row that
+ * proves it. Four tiers, two swatches each — nothing more, because the whole
+ * point being made is that nothing else changes.
+ */
+
+.colorSystem {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 2rem;
+  margin-top: 1.75rem;
+}
+
+/*
+ * flex-wrap, not a fixed grid: .tierName is forced onto its own row by its
+ * own flex-basis rather than by a wrapping element, because a dl only allows
+ * one level of div between itself and its dt/dd — nesting a second wrapper
+ * around the two swatches would be invalid here.
+ */
+.tierCard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+}
+
+.tierName {
+  flex-basis: 100%;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.swatchChip {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.625rem;
+  /* Several of these fills are near-white — without a hairline they would
+     read as a hole in the layout rather than a pale swatch. */
+  border: 1px solid var(--border);
+}
+
+.swatchLabel {
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* ---- Component previews ---------------------------------------------------
+ * Unlike Images just below, these ARE framed — flat browser screenshots of a
+ * documentation site, not product photography or a phone mockup with its own
+ * baked-in edge, so a bare hard edge would read as a clipped rectangle rather
+ * than a deliberate panel.
+ */
+
+.componentPreviews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.componentPreviews > * {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.componentPreview {
+  display: block;
+  width: 100%;
+  /* A fixed ratio rather than each image's own — Components.png is roughly
+     2:1, the two documentation screenshots exactly 16:9. Without this they
+     would sit at three different heights despite matching column widths.
+     contain, not cover: these are dense screenshots with real content
+     touching every edge (nav tabs, filenames, pill labels) — there is no
+     crop direction that doesn't slice through something. Letterboxing on a
+     neutral fill keeps every pixel intact instead of gambling on which edge
+     is safest to lose. */
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background-color: var(--surface);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+/*
+ * Components.png only: its own transparent canvas margin was authored against
+ * a dark background and only reads correctly there — --surface would resolve
+ * to a near-white opaque fill in light theme and wash it out. Pinned to the
+ * literal composite dark mode's --surface already produces, in both themes,
+ * rather than following the active one.
+ */
+.componentPreviewOnDark {
+  background-color: var(--surface-dark-fixed);
 }
 
 /* ---- Images ------------------------------------------------------------- */
@@ -336,10 +1391,21 @@
   max-height: 38rem;
 }
 
+/*
+ * Row, not a column: ADIB's single usability-testing summary still takes the
+ * full width with nothing to share it with, but Absa's pair of wireframe
+ * boards sit side by side instead of stacking at full column width each,
+ * which was rendering them far larger than the screens themselves warrant.
+ */
 .evidence {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 1.25rem;
+}
+
+.evidence > * {
+  flex: 1 1 24rem;
+  min-width: 0;
 }
 
 /* ---- Process ------------------------------------------------------------ */
@@ -402,6 +1468,73 @@
   font-weight: 500;
   line-height: 1.4;
   color: var(--text-primary);
+}
+
+/* ---- Artefacts ------------------------------------------------------------
+ * Each deliverable is its own block — title, prose, then the artefact that
+ * illustrates it — stacked in sequence rather than sharing Process's numbered
+ * rail, since these are standalone pieces of work, not stages of one journey.
+ */
+
+.artefacts {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  margin-top: 0.5rem;
+}
+
+.artefact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/*
+ * Applied to Figure's own <figure> wrapper, not the <img> directly — Figure
+ * owns sizing the image itself (width: 100%, height: auto), so this only
+ * needs to cap and frame the box around it.
+ */
+.artefactImage {
+  display: block;
+  width: 100%;
+  /* Capped well under the content column: these are dense reference
+     screenshots (personas, journey maps), not photography meant to fill the
+     page — full width rendered them far larger than the section warrants. */
+  max-width: min(100%, 40rem);
+  margin-top: 2.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+/* A handful of phone screens illustrating one artefact (Usability Testing's
+   tested flow) — a row of narrow shots rather than one wide board, since
+   that is what they actually are. */
+.artefactImages {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6rem;
+  /* Same rhythm as .artefactImage's own margin-top, not a smaller
+     one-off value — a clear break from the board above, since the two
+     are different pieces of evidence, not one continuous image. */
+  margin-top: var(--section-gap);
+}
+
+.artefactImageSmall {
+  display: block;
+  width: 100%;
+  max-width: min(100%, 13rem);
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+/* A mark (the Nedbank logo, for Competitor analysis) reads small and
+   centred, the same as everywhere else Figure renders one — a screenshot's
+   40rem cap would blow a brand mark up far past its intended size. */
+.artefactImage.figureMark {
+  max-width: min(100%, 12rem);
+  border: none;
 }
 
 @media (max-width: 60rem) {
