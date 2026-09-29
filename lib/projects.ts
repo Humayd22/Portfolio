@@ -47,8 +47,12 @@ export const FEATURED_PROJECT: Project = {
   title: "Product design, design systems and ops for Pura",
   summary:
     "Lead design operations across Pure Health's digital product while building and managing a comprehensive design system, from component creation and documentation through to implementation across design and development, ensuring consistent, scalable experiences throughout Pura.",
-  // NEEDS YOUR NUMBERS. The CV gives no figures for this role, and the card
-  // renders without the block rather than carrying invented ones.
+  /* Worded exactly as the case study's own stat block words them, so the card
+     and the page it opens do not appear to be quoting two different figures. */
+  stats: [
+    { label: "Component usage", value: "100%" },
+    { label: "Platforms", value: "3" },
+  ],
 };
 
 export const PROJECTS: Project[] = [
@@ -94,7 +98,9 @@ export const PROJECTS: Project[] = [
     title: "Clientele Insurance design system",
     summary:
       "I developed a comprehensive design system that established a strong foundation for the design team. This system was crafted with a focus on scalability, productivity, and consistency, enabling the team to work more efficiently and cohesively. It improved both design and code quality, minimized siloed knowledge which enabled collaboration between designers and product teams.",
-    stats: [{ label: "Reduction in Design and Development time", value: "80%" }],
+    stats: [
+      { label: "Reduction in Design and Development time", value: "80%" },
+    ],
   },
   {
     slug: "nedbank",
