@@ -30,3 +30,24 @@
   width: 100% !important;
   height: 100% !important;
 }
+
+/*
+ * Phones show the still frame underneath instead.
+ *
+ * Each of these files is eight shape layers carrying a Gaussian Blur, and the
+ * SVG renderer implements those as animated feGaussianBlur. Filter rasterising
+ * is not GPU-accelerated on most mobile browsers, so five cards on the work
+ * page asks a phone to re-rasterise up to forty blurred filter regions every
+ * frame. The files are 28KB each — this was never a bandwidth problem, it is
+ * purely compositing cost.
+ *
+ * display:none rather than visibility or opacity: an element with no box can
+ * never intersect, so the observer that triggers the dynamic import never
+ * fires and the ~300KB player is not downloaded either. Widen the window past
+ * the breakpoint and it loads then, which is the right behaviour.
+ */
+@media (max-width: 48rem) {
+  .background {
+    display: none;
+  }
+}

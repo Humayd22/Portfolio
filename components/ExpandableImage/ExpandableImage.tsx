@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowsOutSimple, X } from "@phosphor-icons/react";
+import Image from "next/image";
 import { useRef } from "react";
 import styles from "./ExpandableImage.module.css";
 
@@ -19,12 +20,26 @@ export function ExpandableImage({
   src,
   alt,
   className,
+  width,
+  height,
+  sizes,
+  style,
 }: {
   src: string;
   alt: string;
   className?: string;
+  /* Supply both to render the closed state through next/image. Artwork here
+     is exported at several thousand pixels wide and drawn at a fraction of
+     that, so serving the source file to size it down in the browser wastes
+     most of the bytes on a phone. The open state stays a plain <img>: full
+     size is the entire point of opening it. */
+  width?: number;
+  height?: number;
+  sizes?: string;
+  style?: React.CSSProperties;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const optimised = width !== undefined && height !== undefined;
 
   return (
     <>
@@ -34,8 +49,20 @@ export function ExpandableImage({
         onClick={() => dialog.current?.showModal()}
         aria-label={`View ${alt} larger`}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} className={className} />
+        {optimised ? (
+          <Image
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            className={className}
+            sizes={sizes}
+            style={style}
+          />
+        ) : (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img src={src} alt={alt} className={className} />
+        )}
 
         <span className={styles.hint} aria-hidden="true">
           <ArrowsOutSimple weight="light" className={styles.hintIcon} />

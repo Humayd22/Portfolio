@@ -13,6 +13,9 @@ export type Fact = { label: string; value: string };
 
 export type CaseStudyImage = {
   src: string;
+  /** Opens full size when clicked. For artwork with detail worth reading at
+      size, where the column it sits in is too narrow to show it. */
+  expandable?: boolean;
   /**
    * The light-theme artwork, where one exists. Both are rendered and CSS shows
    * the right one, as with the logos elsewhere — choosing in JS would mean
@@ -1660,9 +1663,10 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
             asideArt: true,
             aside: {
               src: "/images/Pura/purescore.png",
-              alt: "Placeholder for the PureScore artwork.",
-              width: 12000,
-              height: 9000,
+              alt: "The PureScore screen: a single score above a digital twin, each body system tinted by where it sits on the risk ramp.",
+              width: 3840,
+              height: 2160,
+              expandable: true,
             },
           },
           {

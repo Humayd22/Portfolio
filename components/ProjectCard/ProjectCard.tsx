@@ -57,7 +57,24 @@ export function ProjectCard({
     <>
       {art ? (
         showing === "animation" ? (
-          <LottieBackground src={art.animation} />
+          <>
+            {/*
+             * The first frame, underneath. On a phone this is the whole
+             * background: the player above it is display:none below the
+             * breakpoint, so its IntersectionObserver never fires and
+             * lottie-web is never fetched — not fetched and paused, not
+             * fetched and hidden. On anything wider the player covers this
+             * completely, so it costs one cached SVG.
+             */}
+            <div
+              className={styles.still}
+              style={{
+                backgroundImage: `url("${frameSrc(art.key, art.frames[0])}")`,
+              }}
+              aria-hidden="true"
+            />
+            <LottieBackground src={art.animation} />
+          </>
         ) : (
           <div
             className={styles.still}
@@ -127,7 +144,11 @@ export function ProjectCard({
     </>
   );
 
-  const className = [styles.card, featured && styles.featured, lightGround && styles.lightGround]
+  const className = [
+    styles.card,
+    featured && styles.featured,
+    lightGround && styles.lightGround,
+  ]
     .filter(Boolean)
     .join(" ");
 

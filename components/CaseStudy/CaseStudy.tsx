@@ -614,17 +614,32 @@ function TrackSections({
                 </div>
 
                 {item.aside && item.asideArt ? (
-                  <Image
-                    src={item.aside.src}
-                    alt={item.aside.alt}
-                    width={item.aside.width}
-                    height={item.aside.height}
-                    className={styles.asideArt}
-                    /* Never drawn larger than it was made: a 230px mark in a
-                       44rem column would otherwise upscale threefold. */
-                    style={{ maxWidth: `min(100%, ${item.aside.width}px)` }}
-                    sizes="(max-width: 64rem) 100vw, 44rem"
-                  />
+                  /* One set of props, two wrappers: the expandable one adds the
+                     trigger and dialog around the identical image, so opening
+                     it is the only difference and the closed state cannot
+                     drift between the two. */
+                  (() => {
+                    const art = {
+                      src: item.aside.src,
+                      alt: item.aside.alt,
+                      width: item.aside.width,
+                      height: item.aside.height,
+                      className: styles.asideArt,
+                      /* Never drawn larger than it was made: a 230px mark in a
+                         44rem column would otherwise upscale threefold. */
+                      style: { maxWidth: `min(100%, ${item.aside.width}px)` },
+                      sizes: "(max-width: 64rem) 100vw, 44rem",
+                    };
+
+                    /* alt is in `art`, but repeated explicitly: the a11y lint
+                       rule cannot see through a spread, and an image losing its
+                       alt text is exactly the thing that rule exists to catch. */
+                    return item.aside.expandable ? (
+                      <ExpandableImage {...art} alt={art.alt} />
+                    ) : (
+                      <Image {...art} alt={art.alt} />
+                    );
+                  })()
                 ) : item.aside ? (
                   <ExpandableImage
                     src={item.aside.src}
