@@ -417,6 +417,10 @@ export type CaseStudy = {
       line; a case study opens with its own headline) and don't have to
       read the same. Falls back to the project's title when omitted. */
   headline?: string;
+  /** The live product, where there is one to visit. Rendered under the intro
+      as a plain link rather than a button: it is an offer, not the thing the
+      page is asking anyone to do. */
+  website?: { href: string; label: string };
   /** One tab each. A single track renders without any tabs at all. */
   tracks: Track[];
 };
@@ -908,6 +912,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
   pura: {
     slug: "pura",
     headline: "Healthcare, Simplified",
+    website: { href: "https://pura.ai", label: "Visit website" },
     tracks: [
       {
         id: "design-system",

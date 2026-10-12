@@ -1087,6 +1087,26 @@ function TrackPanel({ track }: { track: Track }) {
   );
 }
 
+/* The same glyph the project cards carry, so "this goes somewhere" is drawn
+   one way across the site. */
+function VisitIcon() {
+  return (
+    <svg
+      className={styles.visitIcon}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M7 17 17 7" />
+      <path d="M8 7h9v9" />
+    </svg>
+  );
+}
+
 export function CaseStudy({
   project,
   study,
@@ -1096,7 +1116,27 @@ export function CaseStudy({
 }) {
   return (
     <article className={styles.study}>
-      <p className={styles.intro}>{project.summary}</p>
+      {/* Intro and link as one block. Left as siblings of the article they
+          would each take a full --section-gap, which is the spacing between
+          sections and puts the link nearer the tabs below than the sentence
+          it belongs to. */}
+      <div className={styles.lede}>
+        <p className={styles.intro}>{project.summary}</p>
+
+        {study.website ? (
+          <a
+            className={styles.visit}
+            href={study.website.href}
+            target="_blank"
+            /* noreferrer as well as noopener: the older keyword is what some
+               browsers still need to sever window.opener. */
+            rel="noreferrer"
+          >
+            {study.website.label}
+            <VisitIcon />
+          </a>
+        ) : null}
+      </div>
 
       {/* A single strand needs no tabs to choose between. */}
       {study.tracks.length === 1 ? (

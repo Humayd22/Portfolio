@@ -22,6 +22,58 @@
   text-wrap: pretty;
 }
 
+.lede {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+/*
+ * Body size rather than the intro's larger setting: it sits under that
+ * paragraph but is not a continuation of it, and matching the intro would read
+ * as a third line of the same sentence.
+ */
+.visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+  font-size: 1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  /* Drawn on the text only, so the arrow beside it is not underlined too. */
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.125rem;
+  transition: border-color 200ms ease;
+}
+
+.visit:hover {
+  border-bottom-color: var(--text-primary);
+}
+
+.visit:focus-visible {
+  outline: 2px solid var(--emphasis);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.visitIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+  transition: transform 250ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.visit:hover .visitIcon {
+  transform: translate(2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visitIcon {
+    transition: none;
+  }
+}
+
 /* Each strand keeps the page's own rhythm between its sections. */
 .track {
   display: flex;
