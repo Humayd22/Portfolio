@@ -583,9 +583,14 @@ function TrackSections({
                   .filter(Boolean)
                   .join(" ")}
                 style={
-                  item.asideWidth
+                  item.asideWidth || item.asideInsetEnd
                     ? ({
-                        "--aside-w": `${item.asideWidth}rem`,
+                        ...(item.asideWidth && {
+                          "--aside-w": `${item.asideWidth}rem`,
+                        }),
+                        ...(item.asideInsetEnd && {
+                          "--aside-inset-end": `${item.asideInsetEnd}rem`,
+                        }),
                       } as React.CSSProperties)
                     : undefined
                 }

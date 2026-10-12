@@ -93,7 +93,6 @@
   .leadArt {
     max-width: 32rem;
   }
-
 }
 
 /* ---- Overview ----------------------------------------------------------- */
@@ -193,7 +192,6 @@
   line-height: 1.15;
   color: var(--text-primary);
 }
-
 
 /*
  * Emphasis is weight alone by default. Results marks seven product names in a
@@ -573,25 +571,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Fixed layout so the three token columns share the leftover width evenly.
    With auto layout the browser handed almost all of it to Spacing, the first
    column with long content, and the mapping stopped reading as a mapping. */
@@ -777,6 +756,26 @@
   align-items: center;
 }
 
+/*
+ * Pulls the artwork in from the right edge of its column. Padding rather than
+ * a margin because the box is border-box, so one value both narrows the render
+ * and moves it left, which is the pair of adjustments this is ever asked for.
+ *
+ * Side-scoped: on a left-hand aside the same inset has to come off the other
+ * edge, or it would push the artwork away from the prose instead of towards
+ * it. Wide screens only, since the stacked layout centres the artwork and has
+ * no edge to pull away from.
+ */
+@media (min-width: 64.0625rem) {
+  .withAsideArt .asideArt {
+    padding-inline-end: var(--aside-inset-end, 0);
+  }
+
+  .withAsideArt.withAsideLeft .asideArt {
+    padding-inline: var(--aside-inset-end, 0) 0;
+  }
+}
+
 /* No frame and no crop: the render is a composition on transparency, and a
    border would draw a box around empty pixels. */
 .asideArt {
@@ -817,6 +816,20 @@
   /* Stacked, the prose leads whichever side the aside took on a wide screen. */
   .withAsideLeft .asideProse {
     order: 0;
+  }
+
+  /*
+   * Stacked, the artwork column is the full page width, which draws a portrait
+   * render as tall as the viewport. Capping the HEIGHT rather than the width
+   * is what keeps that from touching the landscape renders: they run out of
+   * width long before they reach this, so only tall artwork is affected and
+   * nothing needs to declare its own orientation.
+   */
+  .asideArt {
+    width: auto;
+    max-width: 100%;
+    max-height: 58vh;
+    margin-inline: auto;
   }
 }
 
@@ -1573,7 +1586,6 @@
   }
 }
 
-
 /* ---- Customer feedback -------------------------------------------------- */
 
 /*
@@ -1690,12 +1702,18 @@
    * came out a flat mid-blue — the original runs from a pale sky blue on
    * "Customer" down to near-navy on "feedback."
    */
-  background-image: linear-gradient(200deg, #93d6fa 0%, #62b4ea 26%, #3b82cc 52%, #1d51a4 76%, #123a80 100%);
+  background-image: linear-gradient(
+    200deg,
+    #93d6fa 0%,
+    #62b4ea 26%,
+    #3b82cc 52%,
+    #1d51a4 76%,
+    #123a80 100%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
 }
-
 
 /* ---- Conclusion --------------------------------------------------------- */
 
