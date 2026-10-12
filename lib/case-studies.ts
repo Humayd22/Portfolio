@@ -1632,17 +1632,14 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         approach: [
           {
             title: "Most people only look when something is already wrong",
-            body: "By the time a symptom sends you to a doctor, the interesting part of the story happened months earlier, in numbers nobody was looking at. And those numbers are scattered: a blood panel in one portal, a watch on your wrist, a prescription in a paper bag, an appointment booked by phone. Nothing joins up, so nothing adds up to a picture you can act on.\n\nPura is the argument that it does not have to work this way. It cannot assume you arrive with a full blood panel, or a wearable, or any history at all. It has to be useful on day one with almost nothing, get sharper as your data arrives, and never show you a confident picture it has not earned.",
-          },
-          {
-            title: "Connective health",
-            body: "**Healthcare shouldn't feel like a maze of platforms, jargon, and disconnected steps.** Three sources normally live in three different places, owned by three different systems, and you are left to be the integration layer between them.\n\nYour lab results, your wearable and your own profile all resolve into the same model. Bloods are uploaded, read and turned into biomarkers. A watch streams into a normalised pipeline that speaks one vocabulary whatever device it came from. None of it is shown as three separate feeds, because the value is not in having the data. It is in the data agreeing on one answer.",
+            body: "**By the time a symptom sends you to a doctor, the interesting part of the story happened months earlier.** It happened in numbers nobody was looking at, and those numbers are scattered: a blood panel in one portal, a watch on your wrist, a prescription in a paper bag, an appointment booked by phone. Nothing joins up, so nothing adds up to a picture you can act on.\n\nPura is the argument that it does not have to work this way. It cannot assume you arrive with a full blood panel, or a wearable, or any history at all. It has to be useful on day one with almost nothing, get sharper as your data arrives, and never show you a confident picture it has not earned.\n\nSo your lab results, your wearable and your own profile all resolve into the same model. Bloods are uploaded, read and turned into biomarkers. A watch streams into a normalised pipeline that speaks one vocabulary whatever device it came from. None of it is shown as three separate feeds, because the value is not in having the data. It is in the data agreeing on one answer.",
             asideArt: true,
+            asideWidth: 22,
             aside: {
-              src: "/images/Pura/pura-connective-health.png",
-              alt: 'Two phones: the Pura splash screen, and an onboarding screen reading "Your health, finally understood" over a translucent figure, with Lab results, Medical history and Wearables labelled on the body.',
-              width: 7195,
-              height: 4500,
+              src: "/images/Pura/pura-device.webp",
+              alt: "The Pura app running on a phone, rendered head on.",
+              width: 900,
+              height: 1850,
             },
           },
           {
